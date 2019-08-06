@@ -257,12 +257,13 @@ def setConfig(config):
         setFixedSchedule(c['fixed_schedule'])
 
     # Enable threshold-based ECN marking only if it is explicitly configured.
-    ecn_enabled = 'ecn' in c
-    if ecn_enabled:
-        setEcnThresh(c['ecn'])
-    setEcnEnabled(ecn_enabled)
-    # If using reTCP, then enable ECE marking.
-    setEceEnabled(c['cc'] == 'retcp')
+    # ecn_enabled = 'ecn' in c
+    # if ecn_enabled:
+    #     setEcnThresh(c['ecn'])
+    # setEcnEnabled(ecn_enabled)
+    # # If using reTCP, then enable ECE marking.
+    # setEceEnabled(c['cc'] == 'retcp')
+    setEceEnabled(True)
 
     divertACKs(c['divert_acks'])
     setCircuitLinkDelay(c['circuit_link_delay'])
