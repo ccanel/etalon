@@ -9,6 +9,7 @@ PROGDIR = path.dirname(path.realpath(__file__))
 sys.path.insert(0, path.join(PROGDIR, ".."))
 # For python_config.
 sys.path.insert(0, path.join(PROGDIR, "..", "..", "etc"))
+import time
 
 import buffer_common
 import click_common
@@ -48,6 +49,8 @@ def main():
             click_common.setConfig(cnf_c)
             print("--- done...")
             print("--- experiment {} of {}".format(cnt, tot))
+            while True:
+                time.sleep(1000)
             common.flowgrind(settings={"flows": [{"src": "r1", "dst": "r2"}]})
 
     common.finishExperiment()
