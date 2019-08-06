@@ -401,6 +401,11 @@ print '   -> hsl :: HSLog($NUM_RACKS)'
 # ECE marking (for reTCP). The name is required so that RunSchedule can call
 # its handler.
 print '   -> ecem :: ECEMark($NUM_RACKS)'
+# Packets then pass through MarkIPCE, which looks at the THRESH_EXCEEDED_ANNO
+# user annotation and, if it equals 1, sets the packet's ECN bits to "Congestion
+# Experienced". This element must be named so that scripts can call its write
+# handlers.
+print '   -> ecn :: MarkIPCE'
 print '   -> arp_q '
 print '   -> out'
 print
