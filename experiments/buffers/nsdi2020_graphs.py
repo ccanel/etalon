@@ -546,6 +546,7 @@ def main():
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
             prc=50,
             ylb="Median",
+            ylm=300,
             msg_len=msg_len)
 
     def _9_4():
@@ -560,6 +561,7 @@ def main():
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
             prc=99,
             ylb="99th percentile",
+            ylm=300,
             msg_len=msg_len)
 
     def _4():
