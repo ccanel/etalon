@@ -94,7 +94,7 @@ def get_data(rdb_filepath, edr, key, files, key_fnc, msg_len=112, sync=False):
     return data
 
 
-def plot_lat(keys, latencies, fln, ylb, ylm=None, xlr=0,
+def plot_lat(keys, latencies, fln, ylb, ylm=None, xlr=0, xtk_locs=None,
              odr=path.join(PROGDIR, "graphs"), flt=lambda key: True):
     # Sort the data based on the x-values (keys).
     keys, latencies = zip(
@@ -117,8 +117,9 @@ def plot_lat(keys, latencies, fln, ylb, ylm=None, xlr=0,
     print("")
 
     options = dotmap.DotMap()
-    options.legend.options.labels = ["all traffic", "only circuit",
-                                     "only packet"]
+    options.legend.options.loc = "upper left"
+    options.legend.options.labels = ["both NWs", "circuit NW",
+                                     "packet NW"]
     options.legend.options.fontsize = 20
     options.output_fn = path.join(odr, "{}.pdf".format(fln))
     options.plot_type = "LINE"
@@ -133,6 +134,8 @@ def plot_lat(keys, latencies, fln, ylb, ylm=None, xlr=0,
     options.x.ticks.major.labels = \
         dotmap.DotMap(locations=[4, 8, 16, 32, 64, 128]) \
         if "static" in fln else dotmap.DotMap(locations=keys)
+    if xtk_locs is not None:
+        options.y.ticks.major.labels = dotmap.DotMap(locations=xtk_locs)
     options.x.ticks.major.labels.options.rotation = xlr
     options.x.ticks.major.labels.options.rotation_mode = "anchor"
     options.x.ticks.major.labels.options.horizontalalignment = \
@@ -258,7 +261,7 @@ def plot_util_vs_latency(tpts, latencies, fln):
     simpleplotlib.plot(x, y, options)
 
 
-def lat(name, edr, odr, ptn, key_fnc, prc, ylb, ylm=None, xlr=0,
+def lat(name, edr, odr, ptn, key_fnc, prc, ylb, ylm=None, xlr=0, xtk_locs=None,
         flt=lambda key: True, msg_len=112, sync=False):
     print("Plotting: {}".format(name))
     # Names are of the form "<number>_<details>_<specific options>". Experiments
@@ -268,7 +271,8 @@ def lat(name, edr, odr, ptn, key_fnc, prc, ylb, ylm=None, xlr=0,
     data = get_data(path.join(edr, "{}.db".format(basename)), edr, basename,
                     files={basename: ptn}, key_fnc={basename: key_fnc},
                     msg_len=msg_len, sync=sync)
-    plot_lat(data["keys"], data["lat"][prc], name, ylb, ylm, xlr, odr, flt)
+    plot_lat(
+        data["keys"], data["lat"][prc], name, ylb, ylm, xlr, xtk_locs, odr, flt)
     pyplot.close()
 
 

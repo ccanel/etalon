@@ -114,19 +114,28 @@ CHOSEN_TCP = "cubic"
 # Inset window bounds.
 DYN_INS = ((600, 820), (35, 275))
 # Bounds for zooming in on the graphs.
-# XLM_ZOOM = None
-XLM_ZOOM = (2200, 5200)
-# XLM_ZOOM = (1300, 2900)
-# XLM_ZOOM = (9220, 9700)
-# XLM_ZOOM = (4000, 8120)
-# YLM_ZOOM = None
-YLM_ZOOM = (150, 550)
-# YLM_ZOOM = (750, 1000)
-# YLM_ZOOM = (0, 15000)
-XLM_ZOOM_STATIC = (4100, 5150)
-YLM_ZOOM_STATIC = (300, 500)
-XLM_ZOOM_RETCP = XLM_ZOOM_STATIC
-YLM_ZOOM_RETCP = YLM_ZOOM_STATIC
+# XLM_DYN = None
+XLM_DYN = (2200, 5200)
+# XLM_DYN = (1300, 2900)
+# XLM_DYN = (9220, 9700)
+# XLM_DYN = (4000, 8120)
+# YLM = None
+YLM_DYN = (150, 550)
+# YLM_DYN = (750, 1000)
+# YLM_DYN = (0, 15000)
+XLM_STATIC = (4100, 5150)
+YLM_STATIC = (300, 500)
+XLM_RETCP = XLM_STATIC
+YLM_RETCP = YLM_STATIC
+# axis limits for (1)
+XLM_STATIC_OLD = (1300, 2900)
+YLM_STATIC_OLD = None
+# axis limits for (2)
+# [1220, 1400, 2620, 2800, 4020, 4200]
+XLM_STATIC_CUR = (1300, 2900)
+YLM_STATIC_CUR = None
+# y-axis limit for utilization graphs
+YLM_DYN_LAT = 500
 
 
 def main():
@@ -180,7 +189,9 @@ def main():
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
             rcf_us=rcf_us,
-            voq_agg=True)
+            voq_agg=True,
+            xlm=XLM_STATIC_OLD,
+            ylm=XLM_STATIC_OLD)
 
     def _2():
         sg.seq(
@@ -194,7 +205,9 @@ def main():
             msg_len=msg_len,
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
-            voq_agg=True)
+            voq_agg=True,
+            xlm=XLM_STATIC_CUR,
+            ylm=XLM_STATIC_CUR)
 
     def _3():
         rcf_us = 1
@@ -232,8 +245,8 @@ def main():
             msg_len=msg_len,
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
-            xlm=XLM_ZOOM_STATIC,
-            ylm=YLM_ZOOM_STATIC)
+            xlm=XLM_STATIC,
+            ylm=YLM_STATIC)
 
     def _4_2():
         buffers_graphs.util(
@@ -265,8 +278,8 @@ def main():
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
             voq_agg=True,
-            xlm=XLM_ZOOM_STATIC,
-            ylm=YLM_ZOOM_STATIC)
+            xlm=XLM_STATIC,
+            ylm=YLM_STATIC)
 
     def _5_2():
         buffers_graphs.util(
@@ -327,13 +340,13 @@ def main():
                 voq_agg=True,
                 cir_lat_s=CIR_LAT_s,
                 log_pos=LOG_POS,
-                xlm=XLM_ZOOM,
-                ylm=YLM_ZOOM)
+                xlm=XLM_DYN,
+                ylm=YLM_DYN)
 
     def _6_1_2():
         for dyn_us in DYNS_TO_EXAMINE:
             # With and without zooming in.
-            for xlm_zoom, ylm_zoom in [(XLM_ZOOM, YLM_ZOOM), (None, None)]:
+            for xlm_zoom, ylm_zoom in [(XLM_DYN, YLM_DYN), (None, None)]:
                 sg.seq(
                     sync=SYNC,
                     name="6-1-3_seq-dyn-{}_{}_chunk{}".format(
@@ -380,7 +393,7 @@ def main():
                                          / python_config.TDF)),
             prc=50,
             ylb="Median",
-            ylm=500,
+            ylm=YLM_DYN_LAT,
             xlr=45,
             msg_len=msg_len)
 
@@ -394,8 +407,9 @@ def main():
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             prc=99,
-            ylb="99th percentile\n",
-            ylm=500,
+            ylb="99th percentile",
+            ylm=YLM_DYN_LAT,
+            xtk_locs=[0, 100, 200, 300, 400, 500],
             xlr=45,
             msg_len=msg_len)
 
@@ -462,8 +476,8 @@ def main():
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
             voq_agg=True,
-            xlm=XLM_ZOOM_RETCP,
-            ylm=YLM_ZOOM_RETCP)
+            xlm=XLM_RETCP,
+            ylm=YLM_RETCP)
 
     def _8_2():
         buffers_graphs.util(
@@ -519,8 +533,8 @@ def main():
             log_pos=LOG_POS,
             msg_len=msg_len,
             voq_agg=True,
-            xlm=XLM_ZOOM_RETCP,
-            ylm=YLM_ZOOM_RETCP)
+            xlm=XLM_RETCP,
+            ylm=YLM_RETCP)
 
     def _9_2():
         buffers_graphs.util(
@@ -534,7 +548,6 @@ def main():
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
             order=ORDER_DYN_RETCP_UTIL,
             xlb="Resize time ($\mu$s)",
-            xlr=45,
             lbs=12,
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len)
@@ -551,7 +564,7 @@ def main():
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
             prc=50,
             ylb="Median",
-            ylm=300,
+            ylm=YLM_DYN_LAT,
             msg_len=msg_len)
 
     def _9_4():
@@ -566,7 +579,7 @@ def main():
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
             prc=99,
             ylb="99th percentile",
-            ylm=300,
+            ylm=YLM_DYN_LAT,
             msg_len=msg_len)
 
 
