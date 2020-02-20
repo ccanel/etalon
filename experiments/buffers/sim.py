@@ -14,7 +14,8 @@ from simpleplotlib import plot
 
 MSS_B_EXP = 1500
 MSS_B_TARGET = 9000
-CHOSEN_QUEUE_CAPS = [8, 16, 32, 64, 128]
+# CHOSEN_QUEUE_CAPS = [8, 16, 32, 64, 128]
+CHOSEN_QUEUE_CAPS = [16]
 
 
 def main():
@@ -81,10 +82,11 @@ def main():
 
         options = DotMap()
         options.plot_type = "LINE"
-        options.legend.options.labels = [
-            "{} packets".format(int(round(lbl))) for lbl in lbls]
-        options.legend.options.fontsize = 18
-        options.legend.options.ncol = 1
+        if len(CHOSEN_QUEUE_CAPS) > 1:
+            options.legend.options.labels = [
+                "{} packets".format(int(round(lbl))) for lbl in lbls]
+            options.legend.options.fontsize = 18
+            options.legend.options.ncol = 1
         options.series_options = [DotMap(linewidth=2, marker="o")
                                   for _ in range(len(xs))]
         options.output_fn = path.join(odr, "sim-{}-flows.pdf".format(num_flows))
