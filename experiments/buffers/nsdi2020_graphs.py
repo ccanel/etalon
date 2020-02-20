@@ -58,9 +58,14 @@ STATIC_PTN = "*-{}-*-QUEUE-False-*-{}-*-{}-{}-*-click.txt"
 STATIC_PTN_CUR = STATIC_PTN.format("{}", "{}",
                                    int(round(RECNF_us * python_config.TDF)),
                                    int(round(DAY_LEN_us * python_config.TDF)))
-# Matches experiments with dynamic buffers, a particular resize time, and a
-# particular CC mode.
-DYN_PTN = "*-QUEUE-True-{}-{}-*-click.txt"
+# Matches experiments with dynamic buffers, a particular resize time, a
+# particular CC mode, and days and nights of certain lengths.
+DYN_PTN = "*-QUEUE-True-{}-{}-*-{}-{}-*-click.txt"
+# Matches experiments with dynamic buffers, a particular resize time, a
+# particular CC mode, 20 us nights, and 180 us days.
+DYN_PTN_CUR = DYN_PTN.format("{}", "{}",
+                             int(round(RECNF_us * python_config.TDF)),
+                             int(round(DAY_LEN_us * python_config.TDF)))
 
 # Selection and ordering of the lines.
 #
@@ -310,7 +315,7 @@ def main():
                     "_inset" if ins is not None else ""),
                 edr=edr,
                 odr=odr,
-                ptn=DYN_PTN.format("*", CHOSEN_TCP),
+                ptn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
                 key_fnc=lambda fn: int(round(float(fn.split("-")[7]) /
                                              python_config.TDF)),
                 dur=DUR_us,
@@ -336,7 +341,7 @@ def main():
                         if xlm_zoom is None else "_zoom"),
                     edr=edr,
                     odr=odr,
-                    ptn=DYN_PTN.format(
+                    ptn=DYN_PTN_CUR.format(
                         int(round(dyn_us * python_config.TDF)), CHOSEN_TCP),
                     key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                                  / python_config.TDF)),
@@ -355,7 +360,7 @@ def main():
             name="6-2_util-lat-dyn-{}_util".format(CHOSEN_TCP),
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format("*", CHOSEN_TCP),
+            ptn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             xlb="Resize time ($\mu$s)",
@@ -370,7 +375,7 @@ def main():
             name="6-3_util-lat-dyn-{}_lat50".format(CHOSEN_TCP),
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format("*", CHOSEN_TCP),
+            ptn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             prc=50,
@@ -385,7 +390,7 @@ def main():
             name="6-4_util-lat-dyn-{}_lat99".format(CHOSEN_TCP),
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format("*", CHOSEN_TCP),
+            ptn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             prc=99,
@@ -402,7 +407,7 @@ def main():
                 name="7-1-1_seq-dyn-all-{}us".format(us),
                 edr=edr,
                 odr=odr,
-                ptn=DYN_PTN.format(us_tdf, "*"),
+                ptn=DYN_PTN_CUR.format(us_tdf, "*"),
                 key_fnc=lambda fn: fn.split("-")[8],
                 dur=DUR_us,
                 flt=lambda idx, label, ccs=ORDER_VARS: label in ccs,
@@ -415,7 +420,7 @@ def main():
                 name="7-2_util-lat-dyn-all-{}us_util".format(us),
                 edr=edr,
                 odr=odr,
-                ptn=DYN_PTN.format(us_tdf, "*"),
+                ptn=DYN_PTN_CUR.format(us_tdf, "*"),
                 key_fnc=lambda fn: fn.split("-")[8],
                 xlb="TCP variant",
                 srt=False,
@@ -432,7 +437,7 @@ def main():
                 name="7-1-2_seq-dyn-{}".format(cc),
                 edr=edr,
                 odr=odr,
-                ptn=DYN_PTN.format("*", cc),
+                ptn=DYN_PTN_CUR.format("*", cc),
                 key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                              / python_config.TDF)),
                 dur=DUR_us,
@@ -503,7 +508,7 @@ def main():
             name="9-1_seq-dyn-retcp",
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format("*", "retcp"),
+            ptn=DYN_PTN_CUR.format("*", "retcp"),
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             dur=DUR_us,
@@ -523,7 +528,7 @@ def main():
             name="9-2_util-lat-dyn-retcp_util",
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format("*", "retcp"),
+            ptn=DYN_PTN_CUR.format("*", "retcp"),
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
@@ -540,7 +545,7 @@ def main():
             name="9-3_util-lat-dyn-retcp_lat50",
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format("*", "retcp"),
+            ptn=DYN_PTN_CUR.format("*", "retcp"),
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
@@ -555,13 +560,44 @@ def main():
             name="9-4_util-lat-dyn-retcp_lat99",
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format("*", "retcp"),
+            ptn=DYN_PTN_CUR.format("*", "retcp"),
             key_fnc=lambda fn: int(round(float(fn.split("-")[7])
                                          / python_config.TDF)),
             flt=lambda key, order=ORDER_DYN_RETCP_UTIL: key in order,
             prc=99,
             ylb="99th percentile",
             ylm=300,
+            msg_len=msg_len)
+
+
+    def _10_1():
+        buffers_graphs.util(
+            sync=SYNC,
+            name="10-1_util-lat-vary-night-static-{}_util".format(CHOSEN_TCP),
+            edr=edr,
+            odr=odr,
+            ptn=STATIC_PTN.format(CHOSEN_STATIC_SMALL, CHOSEN_TCP, "*", "*"),
+            key_fnc=lambda fn: int(round(float(fn.split("-")[13])
+                                         / python_config.TDF)),
+            xlb="Resize time ($\mu$s)",
+            xlr=45,
+            lbs=12,
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len)
+
+    def _10_2():
+        buffers_graphs.util(
+            sync=SYNC,
+            name="10-2_util-lat-vary-night-dyn-retcp_util",
+            edr=edr,
+            odr=odr,
+            ptn=DYN_PTN.format(CHOSEN_STATIC_SMALL, CHOSEN_TCP, "*", "*"),
+            key_fnc=lambda fn: int(round(float(fn.split("-")[13])
+                                         / python_config.TDF)),
+            xlb="Resize time ($\mu$s)",
+            xlr=45,
+            lbs=12,
+            num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len)
 
     def _4():
@@ -596,6 +632,10 @@ def main():
         _9_2()
         _9_3()
         _9_4()
+
+    def _10():
+        _10_1()
+        _10_2()
 
     # Note: The numbers below have no correlation with the sections or figures
     #       in the paper.
@@ -635,6 +675,9 @@ def main():
     #     (9.2) Utilization
     #     (9.3) Latency 50
     #     (9.4) Latency 99
+    #   (10) Vary night/day length
+    #     (10.1) static buffers + CUBIC, utilization
+    #     (10.2) dynamic buffers + reTCP, utilization
 
     # _1()
     # _2()
@@ -645,6 +688,7 @@ def main():
     _7()
     _8()
     _9()
+    _10()
 
 
 if __name__ == "__main__":
