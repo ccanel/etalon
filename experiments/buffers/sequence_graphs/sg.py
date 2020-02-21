@@ -361,6 +361,8 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
         except ValueError:
             lls += [k]
 
+    plot_in_ms = seq_xs[-1][-1] > 10000
+
     options = dotmap.DotMap()
     options.plot_type = "LINE" if chunk_mode is None else "SCATTER"
     options.legend.options.loc = "center right"
@@ -371,7 +373,8 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
         options.x.limits = xlm
     if ylm is not None:
         options.y.limits = ylm
-    options.x.label.xlabel = "Time ($\mu$s)"
+    options.x.label.xlabel = "Time ({})".format(
+        "ms" if plot_in_ms else "$\mu$s")
     options.y.label.ylabel = "Expected TCP sequence\nnumber ($\\times$1000)"
     options.x.label.fontsize = options.y.label.fontsize = 18
     options.x.ticks.major.options.labelsize = \
@@ -450,6 +453,9 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
         offset_x, offset_y = options.legend.options.bbox_to_anchor
         options.legend.options.bbox_to_anchor = (offset_x + 0.1, offset_y)
 
+    if plot_in_ms:
+        seq_xs = [[x / 1000. for x in xs] for xs in seq_xs]
+
     simpleplotlib.plot(seq_xs, seq_ys, options)
 
     if plot_voqs:
@@ -494,6 +500,9 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
             *[(vx, vy, o)
               for vx, vy, o in zip(voq_xs, voq_ys, options2.series2_options)
               if vx is not None])
+
+        if plot_in_ms:
+            voq_xs = [[x / 1000. for x in xs] for xs in voq_xs]
 
         ax2 = pyplot.gca().twinx()
         simpleplotlib.plot_data(
