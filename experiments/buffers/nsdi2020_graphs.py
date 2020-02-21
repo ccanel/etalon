@@ -50,9 +50,10 @@ CHOSEN_STATIC_SMALL = 16
 
 # Filename patterns.
 #
+BASIC_PTN = "*-{}-*-QUEUE-{}-*-{}-*-{}-{}-*-click.txt"
 # Matches experiments with static buffers with a particular small capacity, a
 # particular CC mode, and days and nights of certain lengths.
-STATIC_PTN = "*-{}-*-QUEUE-False-*-{}-*-{}-{}-*-click.txt"
+STATIC_PTN = BASIC_PTN.format("{}", "False", "{}", "{}", "{}")
 # Matches experiments with static buffers with a particular small capacity, a
 # particular CC mode, 20 us nights, and 180 us days (under TDF).
 STATIC_PTN_CUR = STATIC_PTN.format("{}", "{}",
@@ -60,7 +61,7 @@ STATIC_PTN_CUR = STATIC_PTN.format("{}", "{}",
                                    int(round(DAY_LEN_us * python_config.TDF)))
 # Matches experiments with dynamic buffers, a particular resize time, a
 # particular CC mode, and days and nights of certain lengths.
-DYN_PTN = "*-QUEUE-True-{}-{}-*-{}-{}-*-click.txt"
+DYN_PTN = BASIC_PTN.format("{}", "True", "{}", "{}", "{}")
 # Matches experiments with dynamic buffers, a particular resize time, a
 # particular CC mode, 20 us nights, and 180 us days.
 DYN_PTN_CUR = DYN_PTN.format("{}", "{}",
@@ -604,7 +605,7 @@ def main():
             name="10-2_util-lat-vary-night-dyn-retcp_util",
             edr=edr,
             odr=odr,
-            ptn=DYN_PTN.format(CHOSEN_STATIC_SMALL, CHOSEN_TCP, "*", "*"),
+            ptn=DYN_PTN.format(CHOSEN_STATIC_SMALL, "retcp", "*", "*"),
             key_fnc=lambda fn: int(round(float(fn.split("-")[13])
                                          / python_config.TDF)),
             xlb="Resize time ($\mu$s)",
