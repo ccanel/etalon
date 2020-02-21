@@ -140,6 +140,7 @@ def get_data(rdb_filepath, edr, key, ptns, dur, key_fnc, time_offset_s,
     data = rdb.get(key)
 
     if data is None:
+        print("Did not find data for \"{}\".".format(key))
         # For each pattern, extract the matches. Then, flatten them into a
         # single list.
         flns = [fln for matches in
@@ -187,6 +188,12 @@ def get_data(rdb_filepath, edr, key, ptns, dur, key_fnc, time_offset_s,
                         for seq_ys in seqs]
         data["voqs"] = voqs
 
+        # Shelve has trouble writing single database entries that are very
+        # large, so write the raw data to the database now in case the following
+        # operations cause it to grow beyond shelve's capacity.
+        rdb[key] = data
+        data = rdb[key]
+
         # Convert the results for each set of original chunk data. Look through
         # each line.
         for line, (_, _, chunks_origs) in data["raw_data"]:
@@ -227,8 +234,8 @@ def get_data(rdb_filepath, edr, key, ptns, dur, key_fnc, time_offset_s,
                     if len(chunk_orig[0]) > len(data["chunks_best"][line][0]):
                         data["chunks_best"][line] = chunk_orig
 
-        # Store the new data in the database.
-        rdb[key] = data
+        # # Store the new data in the database.
+        # rdb[key] = data
 
     if chunk_mode is not None and chunk_mode != "best":
         # Select a particular chunk for each line. Store the results in the
