@@ -587,13 +587,13 @@ def main():
     def _10_1():
         buffers_graphs.util(
             sync=SYNC,
-            name="10-1_util-lat-vary-night-static-{}_util".format(CHOSEN_TCP),
+            name="10-1_util-lat-vary-day-static-{}_util".format(CHOSEN_TCP),
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN.format(CHOSEN_STATIC_SMALL, CHOSEN_TCP, "*", "*"),
             key_fnc=lambda fn: int(round(float(fn.split("-")[13])
                                          / python_config.TDF)),
-            xlb="Resize time ($\mu$s)",
+            xlb="Circuit uptime ($\mu$s)",
             xlr=45,
             lbs=12,
             num_racks=NUM_RACKS_FAKE,
@@ -602,13 +602,13 @@ def main():
     def _10_2():
         buffers_graphs.util(
             sync=SYNC,
-            name="10-2_util-lat-vary-night-dyn-retcp_util",
+            name="10-2_util-lat-vary-day-dyn-retcp_util",
             edr=edr,
             odr=odr,
             ptn=DYN_PTN.format(CHOSEN_STATIC_SMALL, "retcp", "*", "*"),
             key_fnc=lambda fn: int(round(float(fn.split("-")[13])
                                          / python_config.TDF)),
-            xlb="Resize time ($\mu$s)",
+            xlb="Circuit uptime ($\mu$s)",
             xlr=45,
             lbs=12,
             num_racks=NUM_RACKS_FAKE,
