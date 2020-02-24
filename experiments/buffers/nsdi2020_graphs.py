@@ -272,7 +272,7 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             dur=DUR_us,
             order=ORDER_STATIC_SEQ,
             msg_len=msg_len,
@@ -289,7 +289,7 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             xlb="Static buffer size (packets)",
             order=ORDER_STATIC_UTIL,
             num_racks=NUM_RACKS_FAKE,
@@ -302,7 +302,7 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             prc=50,
             ylb="Median",
             msg_len=msg_len)
@@ -314,10 +314,52 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             prc=99,
             ylb="99th percentile",
             msg_len=msg_len)
+
+    def _5_5():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="5-5_lat-vs-util-static_lat50",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat50".format(CHOSEN_TCP),
+            name_dyn=None,
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=None,
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=None,
+            key_fnc_dyn_retcp=None,
+            prc=50,
+            ylb="Median",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _5_6():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="5-6_lat-vs-util-static_lat99",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat99".format(CHOSEN_TCP),
+            name_dyn=None,
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=None,
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=None,
+            key_fnc_dyn_retcp=None,
+            prc=99,
+            ylb="99th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
 
     def _6_1_1():
         # With and without inset.
@@ -414,6 +456,50 @@ def main():
             xlr=45,
             msg_len=msg_len)
 
+    def _6_5():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="6-5_lat-vs-util-dyn_lat50",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat50".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat50".format(CHOSEN_TCP),
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=None,
+            prc=50,
+            ylb="Median",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _6_6():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="6-6_lat-vs-util-dyn_lat99",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat99".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat99".format(CHOSEN_TCP),
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=None,
+            prc=99,
+            ylb="99th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
     def _7_1_1_and_7_2():
         for us in CHOSEN_DYN_uss:
             us_tdf = int(round(us * python_config.TDF))
@@ -470,7 +556,7 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", "retcp"),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             order=ORDER_STATIC_SEQ,
             dur=DUR_us,
             msg_len=msg_len,
@@ -487,7 +573,7 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", "retcp"),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             order=ORDER_STATIC_UTIL,
             xlb="Static buffer size (packets)",
             num_racks=NUM_RACKS_FAKE,
@@ -500,7 +586,7 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", "retcp"),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             prc=50,
             ylb="Median",
             msg_len=msg_len)
@@ -512,7 +598,7 @@ def main():
             edr=edr,
             odr=odr,
             ptn=STATIC_PTN_CUR.format("*", "retcp"),
-            key_fnc=lambda fn: fn.split("-")[3],
+            key_fnc=lambda fn: int(fn.split("-")[3]),
             prc=99,
             ylb="99th percentile",
             msg_len=msg_len)
@@ -583,6 +669,51 @@ def main():
             ylm=YLM_DYN_LAT,
             msg_len=msg_len)
 
+    def _9_5():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="9-5_lat-vs-util-dyn-retcp_lat50",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat50".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat50".format(CHOSEN_TCP),
+            name_dyn_retcp="9-3_util-lat-dyn-retcp_lat50",
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=DYN_PTN_CUR.format("*", "retcp"),
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=lambda fn: int(round(float(fn.split("-")[7])
+                                                   / python_config.TDF)),
+            prc=50,
+            ylb="Median",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _9_6():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="9-6_lat-vs-util-dyn-retcp_lat99",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat99".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat99".format(CHOSEN_TCP),
+            name_dyn_retcp="9-3_util-lat-dyn-retcp_lat99",
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=DYN_PTN_CUR.format("*", "retcp"),
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=lambda fn: int(round(float(fn.split("-")[7])
+                                                   / python_config.TDF)),
+            prc=99,
+            ylb="99th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
 
     def _10_1():
         buffers_graphs.util(
@@ -623,6 +754,8 @@ def main():
         _5_2()
         _5_3()
         _5_4()
+        _5_5()
+        _5_6()
 
     def _6():
         _6_1_1()
@@ -630,6 +763,8 @@ def main():
         _6_2()
         _6_3()
         _6_4()
+        _6_5()
+        _6_6()
 
     def _7():
         _7_1_1_and_7_2()
@@ -646,6 +781,8 @@ def main():
         _9_2()
         _9_3()
         _9_4()
+        _9_5()
+        _9_6()
 
     def _10():
         _10_1()
@@ -667,6 +804,8 @@ def main():
     #     (5.2) Utilization
     #     (5.3) Latency 50
     #     (5.4) Latency 99
+    #     (5.5) Latency 50 vs. utilization
+    #     (5.6) Latency 99 vs. utilization
     #   (6) Dynamic buffers, CUBIC
     #     (6.1) Sequence
     #       (6.1.1) Coarse-grained
@@ -674,6 +813,8 @@ def main():
     #     (6.2) Utilization
     #     (6.3) Latency 50
     #     (6.4) Latency 99
+    #     (6.5) Latency 50 vs. utilization
+    #     (6.6) Latency 99 vs. utilization
     #   (7) Dynamic buffers, all TCP variants
     #     (7.1) Sequence
     #       (7.1.1) Fixed resize time, varying variant
@@ -689,13 +830,15 @@ def main():
     #     (9.2) Utilization
     #     (9.3) Latency 50
     #     (9.4) Latency 99
+    #     (9.5) Latency 50 vs. utilization
+    #     (9.6) Latency 99 vs. utilization
     #   (10) Vary night/day length
     #     (10.1) static buffers + CUBIC, utilization
     #     (10.2) dynamic buffers + reTCP, utilization
 
-    # _1()
-    # _2()
-    # _3()
+    _1()
+    _2()
+    _3()
     _4()
     _5()
     _6()

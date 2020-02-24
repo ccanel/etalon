@@ -26,6 +26,31 @@ import python_config
 SR_RACKS = (2, 3)
 
 
+def get_util_for_tpt(tpt_Gbps_c, num_racks):
+    # Convert circuit throughput into circuit utilization. The throughput values
+    # are averages over the entire experiment, including when the circuit
+    # network was not active: they were computed by dividing the number of bytes
+    # transported by the circuit network over the course the entire experiment
+    # by the length of the experiment. To calculate the average circuit
+    # utilization, we divide the achieved average throughput by the maximum
+    # possible average throughput. The maximum possible average throughput is
+    # equal to the circuit bandwidth multiplied by the fraction of the
+    # experiment during which the circuit network was in use. This is equal to
+    # the fraction of the schedule during which a circuit was assigned between
+    # the racks in question (1 / (num_racks - 1)) times the fraction of that
+    # time during which the circuit was up (reconfiguration time / day length =
+    # 0.9). Therefore:
+    #
+    # util =            throughput           = throughput * (num_racks - 1)
+    #        -------------------------------   ----------------------------
+    #        bandwidth *       1       * 0.9         0.9 * bandwidth
+    #                    -------------
+    #                    num_racks - 1
+    #
+    # Finally, we multiply by 100 to convert to a percent.
+    return (tpt_Gbps_c * (num_racks - 1) /
+            (0.9 * python_config.CIRCUIT_BW_Gbps) * 100)
+
 class FileReaderArgs(object):
     def __init__(self, fln, msg_len):
         self.fln = fln
@@ -157,29 +182,8 @@ def plot_circuit_util(keys, tpts_Gbps_c, fln, xlb, num_racks,
     keys, tpts_Gbps_c = zip(
         *[(key, tpt_Gbps_c)
           for key, tpt_Gbps_c in zip(keys, tpts_Gbps_c) if flt(key)])
-    # Convert circuit throughput into circuit utilization. The throughput values
-    # are averages over the entire experiment, including when the circuit
-    # network was not active: they were computed by dividing the number of bytes
-    # transported by the circuit network over the course the entire experiment
-    # by the length of the experiment. To calculate the average circuit
-    # utilization, we divide the achieved average throughput by the maximum
-    # possible average throughput. The maximum possible average throughput is
-    # equal to the circuit bandwidth multiplied by the fraction of the
-    # experiment during which the circuit network was in use. This is equal to
-    # the fraction of the schedule during which a circuit was assigned between
-    # the racks in question (1 / (num_racks - 1)) times the fraction of that
-    # time during which the circuit was up (reconfiguration time / day length =
-    # 0.9). Therefore:
-    #
-    # util =            throughput           = throughput * (num_racks - 1)
-    #        -------------------------------   ----------------------------
-    #        bandwidth *       1       * 0.9         0.9 * bandwidth
-    #                    -------------
-    #                    num_racks - 1
-    #
-    # Finally, we multiply by 100 to convert to a percent.
-    utls = [tpt_Gbps_c * (num_racks - 1) /
-            (0.9 * python_config.CIRCUIT_BW_Gbps) * 100
+    # Calculate utilization.
+    utls = [get_util_for_tpt(tpt_Gbps_c, num_racks)
             for tpt_Gbps_c in tpts_Gbps_c]
 
     if order is not None:
@@ -224,41 +228,29 @@ def plot_circuit_util(keys, tpts_Gbps_c, fln, xlb, num_racks,
     simpleplotlib.plot([np.arange(len(utls))], [utls], options)
 
 
-def plot_util_vs_latency(tpts, latencies, fln):
-    x = [[min(
-        j / (0.9 * 1. / (python_config.NUM_RACKS - 1)
-             * python_config.CIRCUIT_BW_Gbps) * 100,
-        100.0) for j in t]
-         for t in tpts]
-    y = [zip(*l)[0] for l in latencies]
-
+def plot_lat_vs_util(all_tpts, all_lats, fln, ylb, num_racks, ylm=None,
+                     odr=path.join(PROGDIR, "graphs"), lbs=23):
+    # Calculate utilization.
+    all_utls = [[get_util_for_tpt(tpt_Gbps_c, num_racks)
+                 for tpt_Gbps_c in tpts_Gbps_c]
+                for tpts_Gbps_c in all_tpts]
     options = dotmap.DotMap()
+    options.legend.options.fontsize = lbs
+    options.legend.options.labels = [
+        "Static buffers (vary size)",
+        "Dynamic buffers (vary $\\tau$)",
+        "Dynamic buffers + reTCP (vary $\\tau$)"][:len(all_tpts)]
+    options.output_fn = path.join(odr, "{}.pdf".format(fln))
     options.plot_type = "LINE"
-    options.legend.options.labels = ["Static buffers (vary size)",
-                                     "Dynamic buffers (vary $\\tau$)",
-                                     "reTCP",
-                                     "reTCP + dynamic buffers (vary $\\tau$)"]
-    options.legend.options.fontsize = 19
     options.series_options = [
         dotmap.DotMap(marker="o", markersize=10, linewidth=5)
-        for _ in xrange(len(x))]
-    options.series_options[2].marker = "x"
-    options.series_options[2].s = 100
-    del options.series_options[2].markersize
-    options.series_options[2].zorder = 10
-    options.output_fn = \
-        path.join(PROGDIR, "graphs", "throughput_vs_latency99.pdf") \
-        if "99" in fln \
-           else path.join(PROGDIR, "graphs", "throughput_vs_latency.pdf")
-    options.x.label.xlabel = "Circuit utilization (%)"
-    options.y.label.ylabel = "99th percent. latency ($\mu$s)" if "99" in fln \
-                             else "Median latency ($\mu$s)"
-    options.y.limits = [0, 1000] if "99" in fln else [0, 600]
-    options.y.ticks.major.labels = \
-        dotmap.DotMap(locations=[0, 200, 400, 600, 800, 1000]) \
-        if "99" in fln else \
-        dotmap.DotMap(locations=[0, 100, 200, 300, 400, 500, 600])
-    simpleplotlib.plot(x, y, options)
+        for _ in xrange(len(all_utls))]
+    options.x.label.xlabel = "Average circuit utilization (%)"
+    options.y.label.ylabel = "{} latency ($\mu$s)".format(ylb)
+    ylm = (ylm if ylm is not None else
+           1.2 * max([max(line) for line in all_lats]))
+    options.y.limits = [0, ylm]
+    simpleplotlib.plot(all_utls, all_lats, options)
 
 
 def lat(name, edr, odr, ptn, key_fnc, prc, ylb, ylm=None, xlr=0, xtk_locs=None,
@@ -294,4 +286,42 @@ def util(name, edr, odr, ptn, key_fnc, xlb, num_racks, srt=True, xlr=0, lbs=23,
                     msg_len=msg_len, sync=sync)
     plot_circuit_util(data["keys"], data["tpt_c"], name, xlb, num_racks, odr,
                       srt, xlr, lbs, flt, order)
+    pyplot.close()
+
+
+def lat_vs_util(name_main, edr, odr,
+                name_static, name_dyn, name_dyn_retcp,
+                ptn_static, ptn_dyn, ptn_dyn_retcp,
+                key_fnc_static, key_fnc_dyn, key_fnc_dyn_retcp,
+                prc, ylb, num_racks, ylm=None, msg_len=112, lbs=23, sync=False):
+    """
+    srt: sort
+    xlr: x label rotation (degrees)
+    lbs: bar label fontsize
+    """
+    print("Plotting: {}".format(name_main))
+    all_tpts = []
+    all_lats = []
+    for name, ptn, key_fnc in [
+            (name_static, ptn_static, key_fnc_static),
+            (name_dyn, ptn_dyn, key_fnc_dyn),
+            (name_dyn_retcp, ptn_dyn_retcp, key_fnc_dyn_retcp)]:
+        if name is not None:
+            # Names are of the form "<number>_<details>_<specific options>".
+            # Experiments where <details> are the same should be based on the
+            # same data. Therefore, use <details> as the database key.
+            basename = name.split("_")[1] if "_" in name else name
+            data = get_data(path.join(edr, "{}.db".format(basename)), edr,
+                            basename, files={basename: ptn},
+                            key_fnc={basename: key_fnc}, msg_len=msg_len,
+                            sync=sync)
+            tpts = data["tpt_c"]
+            lats = zip(*data["lat"][prc])[0]
+            if "retcp" in name:
+                tpts = tpts[:-1]
+                lats = lats[:-1]
+            all_tpts.append(tpts)
+            all_lats.append(lats)
+    plot_lat_vs_util(
+        all_tpts, all_lats, name_main, ylb, num_racks, ylm, odr, lbs)
     pyplot.close()
