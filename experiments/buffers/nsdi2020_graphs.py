@@ -104,6 +104,8 @@ CHOSEN_DYN_uss = [1200]
 ORDER_DYN_uss = (["optimal"] +
                  list(reversed([str(us) for us in CHOSEN_DYN_uss])) +
                  ["packet only"])
+# Order for (1), (2), and (3).
+ORDER_MOTIV = ["optimal", "cubic", "packet only"]
 # Dynamic buffer resizing experiments to analyze using chunk mode.
 DYNS_TO_EXAMINE = [0, 25, 50, 75, 100, 125, 150, 175, 200, 225]
 # DYNS_TO_EXAMINE = [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000]
@@ -132,9 +134,9 @@ YLM_RETCP = YLM_STATIC
 XLM_STATIC_OLD = (1300, 2900)
 YLM_STATIC_OLD = None
 # axis limits for (2)
-# [1220, 1400, 2620, 2800, 4020, 4200]
-XLM_STATIC_CUR = (1300, 2900)
-YLM_STATIC_CUR = None
+# XLM_STATIC_CUR = (4550, 4850)
+XLM_STATIC_CUR = (1100, 1500)
+YLM_STATIC_CUR = (0, 230)
 # y-axis limit for utilization graphs
 YLM_DYN_LAT = 500
 
@@ -187,6 +189,7 @@ def main():
             key_fnc=lambda fn, chosen_tcp=CHOSEN_TCP: chosen_tcp,
             dur=int(round((rcf_us + day_len_us) * (NUM_RACKS_FAKE - 1) * 3)),
             msg_len=msg_len,
+            order=ORDER_MOTIV,
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
             rcf_us=rcf_us,
@@ -204,11 +207,12 @@ def main():
             key_fnc=lambda fn, chosen_tcp=CHOSEN_TCP: chosen_tcp,
             dur=DUR_us,
             msg_len=msg_len,
+            order=ORDER_MOTIV,
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
-            voq_agg=True,
+            voq_agg=False,
             xlm=XLM_STATIC_CUR,
-            ylm=XLM_STATIC_CUR)
+            ylm=YLM_STATIC_CUR)
 
     def _3():
         rcf_us = 1
@@ -227,6 +231,7 @@ def main():
             key_fnc=lambda fn, chosen_tcp=CHOSEN_TCP: chosen_tcp,
             dur=int(round((rcf_us + day_len_us) * (NUM_RACKS_FAKE - 1) * 3)),
             msg_len=msg_len,
+            order=ORDER_MOTIV,
             cir_lat_s=CIR_LAT_s,
             log_pos=LOG_POS,
             rcf_us=rcf_us,

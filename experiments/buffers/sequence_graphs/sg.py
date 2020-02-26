@@ -368,7 +368,7 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
         except ValueError:
             lls += [k]
 
-    plot_in_ms = seq_xs[-1][-1] > 10000
+    plot_in_ms = seq_xs[-1][-1] > 1e4
 
     options = dotmap.DotMap()
     options.plot_type = "LINE" if chunk_mode is None else "SCATTER"
@@ -377,7 +377,7 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
     options.legend.options.fontsize = 18
     options.output_fn = path.join(odr, "{}.pdf".format(fln))
     if xlm is not None:
-        options.x.limits = xlm
+        options.x.limits = [x / 1.e3 for x in xlm] if plot_in_ms else xlm
     if ylm is not None:
         options.y.limits = ylm
     options.x.label.xlabel = "Time ({})".format(
@@ -393,6 +393,9 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
     shaded = []
     for i in xrange(0, len(circuit_bounds), 2):
         shaded.append((circuit_bounds[i], circuit_bounds[i + 1]))
+    if plot_in_ms:
+        options.vertical_lines.lines = [x / 1.e3 for x in options.vertical_lines.lines]
+        shaded = [tuple([x / 1.e3 for x in xs]) for xs in shaded]
     options.vertical_shaded.limits = shaded
     options.vertical_shaded.options.alpha = 0.1
     options.vertical_shaded.options.color = "blue"
@@ -461,7 +464,7 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
         options.legend.options.bbox_to_anchor = (offset_x + 0.1, offset_y)
 
     if plot_in_ms:
-        seq_xs = [[x / 1000. for x in xs] for xs in seq_xs]
+        seq_xs = [[x / 1.e3 for x in xs] for xs in seq_xs]
 
     simpleplotlib.plot(seq_xs, seq_ys, options)
 
@@ -509,7 +512,7 @@ def plot_seq(data, fln, odr=path.join(PROGDIR, "..", "graphs"),
               if vx is not None])
 
         if plot_in_ms:
-            voq_xs = [[x / 1000. for x in xs] for xs in voq_xs]
+            voq_xs = [[x / 1.e3 for x in xs] for xs in voq_xs]
 
         ax2 = pyplot.gca().twinx()
         simpleplotlib.plot_data(
