@@ -361,6 +361,69 @@ def main():
             msg_len=msg_len,
             lbs=12)
 
+    def _5_7():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="5-7_lat-vs-util-dyn-retcp_lat999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat999".format(CHOSEN_TCP),
+            name_dyn=None,
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=None,
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=None,
+            key_fnc_dyn_retcp=None,
+            prc=99.9,
+            ylb="99.9th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _5_8():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="5-8_lat-vs-util-dyn-retcp_lat9999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat9999".format(CHOSEN_TCP),
+            name_dyn=None,
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=None,
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=None,
+            key_fnc_dyn_retcp=None,
+            prc=99.99,
+            ylb="99.99th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _5_9():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="5-9_lat-vs-util-dyn-retcp_lat99999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat99999".format(CHOSEN_TCP),
+            name_dyn=None,
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=None,
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=None,
+            key_fnc_dyn_retcp=None,
+            prc=99.999,
+            ylb="99.999th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
     def _6_1_1():
         # With and without inset.
         for ins in [None]:
@@ -496,6 +559,72 @@ def main():
             key_fnc_dyn_retcp=None,
             prc=99,
             ylb="99th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _6_7():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="6-7_lat-vs-util-dyn-retcp_lat999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat999".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat999".format(CHOSEN_TCP),
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=None,
+            prc=99.9,
+            ylb="99.9th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _6_8():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="6-8_lat-vs-util-dyn-retcp_lat9999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat9999".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat9999".format(CHOSEN_TCP),
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=None,
+            prc=99.99,
+            ylb="99.99th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _6_9():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="6-9_lat-vs-util-dyn-retcp_lat99999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat99999".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat99999".format(CHOSEN_TCP),
+            name_dyn_retcp=None,
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=None,
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=None,
+            prc=99.999,
+            ylb="99.999th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
             lbs=12)
@@ -715,6 +844,75 @@ def main():
             msg_len=msg_len,
             lbs=12)
 
+    def _9_7():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="9-7_lat-vs-util-dyn-retcp_lat999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat999".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat999".format(CHOSEN_TCP),
+            name_dyn_retcp="9-3_util-lat-dyn-retcp_lat999",
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=DYN_PTN_CUR.format("*", "retcp"),
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=lambda fn: int(round(float(fn.split("-")[7])
+                                                   / python_config.TDF)),
+            prc=99.9,
+            ylb="99.9th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _9_8():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="9-8_lat-vs-util-dyn-retcp_lat9999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat9999".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat9999".format(CHOSEN_TCP),
+            name_dyn_retcp="9-3_util-lat-dyn-retcp_lat9999",
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=DYN_PTN_CUR.format("*", "retcp"),
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=lambda fn: int(round(float(fn.split("-")[7])
+                                                   / python_config.TDF)),
+            prc=99.99,
+            ylb="99.99th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
+    def _9_9():
+        buffers_graphs.lat_vs_util(
+            sync=SYNC,
+            name_main="9-9_lat-vs-util-dyn-retcp_lat99999",
+            edr=edr,
+            odr=odr,
+            name_static="5-3_util-lat-static-{}_lat99999".format(CHOSEN_TCP),
+            name_dyn="6-3_util-lat-dyn-{}_lat99999".format(CHOSEN_TCP),
+            name_dyn_retcp="9-3_util-lat-dyn-retcp_lat99999",
+            ptn_static=STATIC_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn=DYN_PTN_CUR.format("*", CHOSEN_TCP),
+            ptn_dyn_retcp=DYN_PTN_CUR.format("*", "retcp"),
+            key_fnc_static=lambda fn: int(fn.split("-")[3]),
+            key_fnc_dyn=lambda fn: int(round(float(fn.split("-")[7])
+                                             / python_config.TDF)),
+            key_fnc_dyn_retcp=lambda fn: int(round(float(fn.split("-")[7])
+                                                   / python_config.TDF)),
+            prc=99.999,
+            ylb="99.999th percentile\n",
+            num_racks=NUM_RACKS_FAKE,
+            msg_len=msg_len,
+            lbs=12)
+
     def _10_1():
         buffers_graphs.util(
             sync=SYNC,
@@ -756,6 +954,9 @@ def main():
         _5_4()
         _5_5()
         _5_6()
+        _5_7()
+        _5_8()
+        _5_9()
 
     def _6():
         _6_1_1()
@@ -765,6 +966,9 @@ def main():
         _6_4()
         _6_5()
         _6_6()
+        _6_7()
+        _6_8()
+        _6_9()
 
     def _7():
         _7_1_1_and_7_2()
@@ -783,6 +987,9 @@ def main():
         _9_4()
         _9_5()
         _9_6()
+        _9_7()
+        _9_8()
+        _9_9()
 
     def _10():
         _10_1()
@@ -806,6 +1013,9 @@ def main():
     #     (5.4) Latency 99
     #     (5.5) Latency 50 vs. utilization
     #     (5.6) Latency 99 vs. utilization
+    #     (5.7) Latency 99.9 vs. utilization
+    #     (5.8) Latency 99.99 vs. utilization
+    #     (5.9) Latency 99.999 vs. utilization
     #   (6) Dynamic buffers, CUBIC
     #     (6.1) Sequence
     #       (6.1.1) Coarse-grained
@@ -815,6 +1025,9 @@ def main():
     #     (6.4) Latency 99
     #     (6.5) Latency 50 vs. utilization
     #     (6.6) Latency 99 vs. utilization
+    #     (6.7) Latency 99.9 vs. utilization
+    #     (6.8) Latency 99.99 vs. utilization
+    #     (6.9) Latency 99.999 vs. utilization
     #   (7) Dynamic buffers, all TCP variants
     #     (7.1) Sequence
     #       (7.1.1) Fixed resize time, varying variant
@@ -832,6 +1045,9 @@ def main():
     #     (9.4) Latency 99
     #     (9.5) Latency 50 vs. utilization
     #     (9.6) Latency 99 vs. utilization
+    #     (9.7) Latency 99.9 vs. utilization
+    #     (9.8) Latency 99.99 vs. utilization
+    #     (9.9) Latency 99.999 vs. utilization
     #   (10) Vary night/day length
     #     (10.1) static buffers + CUBIC, utilization
     #     (10.2) dynamic buffers + reTCP, utilization

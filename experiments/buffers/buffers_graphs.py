@@ -103,6 +103,12 @@ def get_data(rdb_filepath, edr, key, files, key_fnc, msg_len=112, sync=False):
                 lt for _, lt in zip(*lats)[parse_logs.PERCENTILES.index(50)]]
             data["lat"][99][lbl] = [
                 lt for _, lt in zip(*lats)[parse_logs.PERCENTILES.index(99)]]
+            data["lat"][99.9][lbl] = [
+                lt for _, lt in zip(*lats)[parse_logs.PERCENTILES.index(99.9)]]
+            data["lat"][99.99][lbl] = [
+                lt for _, lt in zip(*lats)[parse_logs.PERCENTILES.index(99.99)]]
+            data["lat"][99.999][lbl] = [
+                lt for _, lt in zip(*lats)[parse_logs.PERCENTILES.index(99.999)]]
 
         # Convert from dictionary to key-value pairs, then sort by the key, then
         # extract the keys only.
@@ -111,6 +117,9 @@ def get_data(rdb_filepath, edr, key, files, key_fnc, msg_len=112, sync=False):
         # extract the values only.
         data["lat"][50] = list(zip(*sorted(data["lat"][50].items()))[1])
         data["lat"][99] = list(zip(*sorted(data["lat"][99].items()))[1])
+        data["lat"][99.9] = list(zip(*sorted(data["lat"][99.9].items()))[1])
+        data["lat"][99.99] = list(zip(*sorted(data["lat"][99.99].items()))[1])
+        data["lat"][99.999] = list(zip(*sorted(data["lat"][99.999].items()))[1])
         data["tpt_c"] = list(zip(*sorted(data["tpt_c"].items()))[1])
         # Store the new data in the database.
         rdb[key] = dict(data)
