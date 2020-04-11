@@ -205,6 +205,16 @@ IMAGE_DOCKER_RUN = collections.defaultdict(lambda: DOCKER_RUN, {
     'reHDFS_adu': DOCKER_RUN_HDFS
 })
 
+IMAGE_PORT = {
+    'flowgrindd': FLOWGRIND_PORT,
+    'flowgrindd_adu': FLOWGRIND_PORT,
+    'iperf3': IPERF3_PORT,
+    'HDFS': HDFS_PORT,
+    'HDFS_adu': HDFS_PORT,
+    'reHDFS': HDFS_PORT,
+    'reHDFS_adu': HDFS_PORT
+}
+
 IMAGE_CMD = {
     'flowgrindd': '"pipework --wait -i eth1 && pipework --wait -i eth2 && '
                   'LD_PRELOAD=libVT.so taskset -c {cpu} '

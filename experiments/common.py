@@ -579,7 +579,6 @@ def launch_all_racks(image, sync=True):
         for h in xrange(1, num_hosts + 1):
             ip = get_control_ip_from_host(get_host_from_rack_and_id(r, h))
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            port = FLOWGRIND_PORT if 'flowgrind' in image else HDFS_PORT
-            while sock.connect_ex((ip, port)):
+            while sock.connect_ex((ip, IMAGE_PORT[image])):
                 time.sleep(1)
             sock.close()
