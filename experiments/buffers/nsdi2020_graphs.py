@@ -139,6 +139,8 @@ XLM_STATIC_CUR = (1100, 1500)
 YLM_STATIC_CUR = (0, 230)
 # y-axis limit for utilization graphs
 YLM_DYN_LAT = 500
+# Legend label size for latency vs. utilization graphs.
+LBS_LAT_VS_UTIL = 20
 
 
 def main():
@@ -343,7 +345,7 @@ def main():
             ylb="Median",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _5_6():
         buffers_graphs.lat_vs_util(
@@ -364,7 +366,7 @@ def main():
             ylb="99th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _5_7():
         buffers_graphs.lat_vs_util(
@@ -385,7 +387,7 @@ def main():
             ylb="99.9th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _5_8():
         buffers_graphs.lat_vs_util(
@@ -406,7 +408,7 @@ def main():
             ylb="99.99th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _5_9():
         buffers_graphs.lat_vs_util(
@@ -427,7 +429,7 @@ def main():
             ylb="99.999th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _6_1_1():
         # With and without inset.
@@ -544,7 +546,7 @@ def main():
             ylb="Median",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _6_6():
         buffers_graphs.lat_vs_util(
@@ -566,7 +568,7 @@ def main():
             ylb="99th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _6_7():
         buffers_graphs.lat_vs_util(
@@ -588,7 +590,7 @@ def main():
             ylb="99.9th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _6_8():
         buffers_graphs.lat_vs_util(
@@ -610,7 +612,7 @@ def main():
             ylb="99.99th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _6_9():
         buffers_graphs.lat_vs_util(
@@ -632,7 +634,7 @@ def main():
             ylb="99.999th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _7_1_1_and_7_2():
         for us in CHOSEN_DYN_uss:
@@ -824,7 +826,7 @@ def main():
             ylb="Median",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _9_6():
         buffers_graphs.lat_vs_util(
@@ -847,7 +849,7 @@ def main():
             ylb="99th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _9_7():
         buffers_graphs.lat_vs_util(
@@ -870,7 +872,7 @@ def main():
             ylb="99.9th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _9_8():
         buffers_graphs.lat_vs_util(
@@ -893,7 +895,7 @@ def main():
             ylb="99.99th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _9_9():
         buffers_graphs.lat_vs_util(
@@ -916,7 +918,7 @@ def main():
             ylb="99.999th percentile\n",
             num_racks=NUM_RACKS_FAKE,
             msg_len=msg_len,
-            lbs=12)
+            lbs=LBS_LAT_VS_UTIL)
 
     def _10_1():
         buffers_graphs.util(
