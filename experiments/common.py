@@ -314,6 +314,39 @@ def flowgrind(settings):
     save_counters(click_common.FN_FORMAT % ('flowgrind.counters'))
 
 
+def run_iperf3(flow):
+    # Start iperf3 server.
+    run_on_host(dst, start_server_cmd, sync=True)
+    # Run experiment.
+    output = run_on_host(src, cmd, sync=True)
+    # Stop iperf3 server.
+    run_on_host(dst, stop_server_cmd, sync=True)
+
+
+
+
+def iperf3(settings):
+    flows = settings.get("flows", [])
+    assert flows, "No flows specified in settings: {}".format(settings)
+
+    # Verify that all dsts are different.
+    dsts = set([flow["dst"] for flow in flows])
+    num_flows = len(flows)
+    assert len(dsts) == num_flows, \
+        "Each flow must have a different destination: {}".format(flows)
+
+    # Run the flows, and optionally collect tcpdump traces.
+    tcpdump = settings.get("tcpdump", False)
+    if tcpdump:
+        tcpdumps = tcpdump_start(click_common.FN_FORMAT)
+    with multiprocessing.Pool(num_flows) as pool:
+        output = pool.map(run_iperf3, flows)
+    if tcpdump:
+        tcpdump_finish(tcpdumps)
+    save_counters(click_common.FN_FORMAT % ('flowgrind.counters'))
+
+
+
 ##
 # DFSIOE
 ##
