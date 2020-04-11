@@ -195,14 +195,14 @@ IMAGE_SETUP = {
         lambda: 'HDFS_adu', {'h11': 'HDFS_nn_adu'}),
     'reHDFS': collections.defaultdict(lambda: 'reHDFS', {'h11': 'reHDFS_nn'}),
     'reHDFS_adu': collections.defaultdict(
-        lambda: 'reHDFS_adu', {'h11': 'reHDFS_nn_adu'}),
+        lambda: 'reHDFS_adu', {'h11': 'reHDFS_nn_adu'})
 }
 
 IMAGE_DOCKER_RUN = collections.defaultdict(lambda: DOCKER_RUN, {
     'HDFS': DOCKER_RUN_HDFS,
     'HDFS_adu': DOCKER_RUN_HDFS,
     'reHDFS': DOCKER_RUN_HDFS,
-    'reHDFS_adu': DOCKER_RUN_HDFS,
+    'reHDFS_adu': DOCKER_RUN_HDFS
 })
 
 IMAGE_CMD = {
@@ -298,7 +298,7 @@ IMAGE_CMD = {
                      '/usr/local/hadoop/sbin/start-yarn.sh && '
                      '/usr/local/hadoop/sbin/mr-jobhistory-daemon.sh start '
                      'historyserver && '
-                     'sleep infinity"',
+                     'sleep infinity"'
 }
 
 # All available CC mode. Found by:
