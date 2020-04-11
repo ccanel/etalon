@@ -1,6 +1,8 @@
 
 import datetime
 import glob
+import json
+import multiprocessing
 import os
 from os import path
 import socket
@@ -33,7 +35,7 @@ from python_config import NUM_RACKS, HOSTS_PER_RACK, TIMESTAMP, SCRIPT, \
     IMAGE_DOCKER_RUN, REMOVE_HOSTS_FILE, gen_slaves_file, SLAVES_FILE, \
     get_hostname_from_rack_and_id, get_rack_and_id_from_host, DEFAULT_CC, \
     FLOWGRIND_DEFAULT_DUR_S, FLOWGRIND_DEFAULT_SAMPLE_RATE, TCPDUMP, RM, \
-    WHOAMI, PGREP, KILL
+    WHOAMI, PGREP, KILL, IPERF3_PORT, IPERF3, IMAGE_PORT
 
 # The last CC mode set by setCC().
 CURRENT_CC = None
@@ -314,37 +316,65 @@ def flowgrind(settings):
     save_counters(click_common.FN_FORMAT.format('flowgrind.counters', "txt"))
 
 
-def run_iperf3(flow):
-    # Start iperf3 server.
-    run_on_host(dst, start_server_cmd, sync=True)
+def run_iperf3(flw):
+    print("flw: {}".format(flw))
+
+    # Busywait until the predetermined start time.
+    start_time = flw.get("start_time")
+    if start_time is not None:
+        print("Will start in {:.2f} seconds".format(start_time - time.time()))
+        while time.time() < start_time:
+            continue
+
     # Run experiment.
-    output = run_on_host(src, cmd, sync=True)
-    # Stop iperf3 server.
-    run_on_host(dst, stop_server_cmd, sync=True)
-
-
+    return json.loads(run_on_host(
+        host=flw["src"],
+        cmd=IPERF3.format(
+            port=IPERF3_PORT, dst=get_data_ip_from_host(flw["dst"]),
+            data_GB=flw["data_GB"], parallel=flw["parallel"]),
+        sync=True))
 
 
 def iperf3(settings):
-    flows = settings.get("flows", [])
-    assert flows, "No flows specified in settings: {}".format(settings)
+    flws = settings.get("flows", [])
+    assert flws, "No flows specified in settings: {}".format(settings)
 
     # Verify that all dsts are different.
-    dsts = set([flow["dst"] for flow in flows])
-    num_flows = len(flows)
-    assert len(dsts) == num_flows, \
-        "Each flow must have a different destination: {}".format(flows)
+    dsts = set([flw["dst"] for flw in flws])
+    num_flws = len(flws)
+    assert len(dsts) == num_flws, \
+        "Each flow must have a different destination: {}".format(flws)
+
+    # If there is more than one concurrent flow, then set a time for all of the
+    # flows to start together.
+    if num_flws > 1:
+        start_time = time.time() + 10
+        for flw in flws:
+            flw["start_time"] = start_time
 
     # Run the flows, and optionally collect tcpdump traces.
     tcpdump = settings.get("tcpdump", False)
     if tcpdump:
         tcpdumps = tcpdump_start(click_common.FN_FORMAT)
-    with multiprocessing.Pool(num_flows) as pool:
-        output = pool.map(run_iperf3, flows)
+    pol = multiprocessing.Pool(num_flws)
+    print("Running...")
+    # outs = [run_iperf3(flw) for flw in flws]
+    outs = pol.map(run_iperf3, flws)
+    print("Done")
+    pol.close()
+    pol.join()
     if tcpdump:
         tcpdump_finish(tcpdumps)
     save_counters(click_common.FN_FORMAT.format("iperf3.counters", "txt"))
 
+    # Combine the flow configurations and outputs into one JSON object and write
+    # it to a file.
+    fln = click_common.FN_FORMAT.format("iperf3", "json")
+    with open(fln, mode="w") as fil:
+        fil.write(json.dumps(
+            [{"flow": flw, "output": out} for flw, out in zip(flws, outs)],
+            indent=4))
+    EXPERIMENTS.append(fln)
 
 
 ##
