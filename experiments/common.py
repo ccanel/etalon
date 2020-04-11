@@ -576,7 +576,7 @@ def launch_rack(phost, image, sync=True):
         else:
             ts.append(threading.Thread(target=launch, args=(phost, image, i)))
             ts[-1].start()
-    map(lambda t: t.join(), ts)
+    [t.join() for t in ts]
 
 
 def launch_all_racks(image, sync=True):
