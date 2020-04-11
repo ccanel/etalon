@@ -70,6 +70,9 @@ NODES_FILE = '../etc/handles'
 # flowgrind
 FLOWGRIND_PORT = 5999
 
+# iperf3
+IPERF3_PORT = 5201
+
 # hdfs
 HDFS_PORT = 50010  # datanode transfer port
 
@@ -151,6 +154,8 @@ NS_RUN = 'sudo nsenter -t {pid} -n {cmd}'
 PGREP = "ps -e | pgrep {program}"
 # Send a signal to a process.
 KILL = "sudo kill -{signal} {process}"
+# iperf3
+IPERF3 = "iperf3 -p {port} -c {dst} -n {data_GB}G -P {parallel} -V -J"
 
 # temporary files
 DID_BUILD_FN = '/tmp/docker_built'
@@ -184,6 +189,7 @@ IMAGE_NUM_HOSTS = collections.defaultdict(lambda: HOSTS_PER_RACK, {
 IMAGE_SETUP = {
     'flowgrindd': collections.defaultdict(lambda: 'flowgrindd'),
     'flowgrindd_adu': collections.defaultdict(lambda: 'flowgrindd_adu'),
+    'iperf3': collections.defaultdict(lambda: 'iperf3'),
     'HDFS': collections.defaultdict(lambda: 'HDFS', {'h11': 'HDFS_nn'}),
     'HDFS_adu': collections.defaultdict(
         lambda: 'HDFS_adu', {'h11': 'HDFS_nn_adu'}),
@@ -207,6 +213,10 @@ IMAGE_CMD = {
     'flowgrindd_adu': '"pipework --wait -i eth1 && pipework --wait -i eth2 && '
                       'LD_PRELOAD=libVT.so:libADU.so taskset -c {cpu} '
                       'flowgrindd -d -c {cpu}"',
+
+    'iperf3': '"pipework --wait -i eth1 && pipework --wait -i eth2 && '
+              'LD_PRELOAD=libVT.so taskset -c {cpu} '
+              'iperf3 -p 5201 -s -A {cpu}"',
 
     'HDFS': '"service ssh start && '
             'pipework --wait -i eth1 && pipework --wait -i eth2 && sleep infinity"',
