@@ -325,8 +325,8 @@ def setConfig(config):
     if t == "fake_strobe":
         FN_FORMAT += "{}-".format(c["num_racks_fake"])
 
-    FN_FORMAT += '%s.txt'
+    FN_FORMAT += '{}.{}'
     if config and c['packet_log']:
-        setLog('/tmp/' + FN_FORMAT % 'click')
+        setLog('/tmp/' + FN_FORMAT.format('click', 'txt'))
     if not c['packet_log']:
         disableLog()

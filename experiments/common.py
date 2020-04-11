@@ -224,7 +224,7 @@ class Tcpdump(object):
         # format is from click_common.FN_FORMAT.)
         self.flp_rem = path.join(
             "/home", self.usr,
-            "{}-tcpdump-{}.pcap".format(fln_fmt[:-7], self.host))
+            "{}-tcpdump-{}.pcap".format(fln_fmt[:-6], self.host))
         # Start the tcpdump trace, running in the background.
         run_on_host(self.host,
                     cmd=(TCPDUMP.format(
@@ -294,7 +294,7 @@ def flowgrind(settings):
     for i, f in enumerate(flows):
         cmd += '-F %d -Hs=%s,d=%s ' % \
                (i, get_flowgrind_host(f['src']), get_flowgrind_host(f['dst']))
-    fg_config = click_common.FN_FORMAT % ('flowgrind.config')
+    fg_config = click_common.FN_FORMAT.format('flowgrind.config', "txt")
     fp = open(fg_config, 'w')
     print("flowgrind cmd: {}".format(cmd))
     fp.write(cmd)
@@ -302,7 +302,7 @@ def flowgrind(settings):
     cmd = 'flowgrind --configure %s' % fg_config
     print cmd
     EXPERIMENTS.append(fg_config)
-    fn = click_common.FN_FORMAT % ('flowgrind')
+    fn = click_common.FN_FORMAT.format('flowgrind', "txt")
     print fn
     tcpdump = settings.get("tcpdump", False)
     if tcpdump:
@@ -311,7 +311,7 @@ def flowgrind(settings):
     runWriteFile(cmd, fn)
     if tcpdump:
         tcpdump_finish(tcpdumps)
-    save_counters(click_common.FN_FORMAT % ('flowgrind.counters'))
+    save_counters(click_common.FN_FORMAT.format('flowgrind.counters', "txt"))
 
 
 def run_iperf3(flow):
@@ -343,7 +343,7 @@ def iperf3(settings):
         output = pool.map(run_iperf3, flows)
     if tcpdump:
         tcpdump_finish(tcpdumps)
-    save_counters(click_common.FN_FORMAT % ('flowgrind.counters'))
+    save_counters(click_common.FN_FORMAT.format("iperf3.counters", "txt"))
 
 
 
@@ -351,7 +351,7 @@ def iperf3(settings):
 # DFSIOE
 ##
 def dfsioe(host, image):
-    fn = click_common.FN_FORMAT % ('dfsioe')
+    fn = click_common.FN_FORMAT.format('dfsioe', "txt")
     print fn
     time.sleep(10)
     print 'starting dfsioe...'
@@ -373,7 +373,7 @@ def dfsioe(host, image):
     log_hostname = get_hostname_from_rack_and_id(r, h)
     getFilesForLater(log_hostname, '~/HiBench/report', tmp_dir)
 
-    save_counters(click_common.FN_FORMAT % ('dfsioe.counters'))
+    save_counters(click_common.FN_FORMAT.format('dfsioe.counters', "txt"))
 
 
 ##
