@@ -16,7 +16,7 @@ import python_config
 # If True, then do not run experiments and instead only print configurations.
 DRY_RUN = False
 # If True, then collect tcpdump traces for every experiment.
-TCPDUMP = True
+TCPDUMP = False
 # If True, then racks will be launched in serial.
 SYNC = False
 # The number of racks to mimic when creating the strobe schedule.
