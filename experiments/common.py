@@ -358,6 +358,8 @@ def iperf3(settings):
         tcpdumps = tcpdump_start(click_common.FN_FORMAT)
     pol = multiprocessing.Pool(num_flws)
     print("Running...")
+    # TODO: There are bugs with running multiple iperf3 flows concurrently.
+    #       Perhaps the problem is with port number overloading?
     # outs = [run_iperf3(flw) for flw in flws]
     outs = pol.map(run_iperf3, flws)
     print("Done")
