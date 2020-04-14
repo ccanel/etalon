@@ -205,6 +205,8 @@ def setFakeStrobeSchedule(num_racks_fake=NUM_RACKS, night_len_us=20, day_len_us=
     cluster because we do not need a configuration where each of the racks
     connects to itself.
     """
+    assert NUM_RACKS == 3, \
+        "Fake schedules are currently only supported on 3-rack clusters."
     assert num_racks_fake >= 3, \
         ("Can only fake testbeds with more than 3 racks, but "
          "\"num_racks_fake\" = {}").format(num_racks_fake)
@@ -324,6 +326,8 @@ def setConfig(config):
         FN_FORMAT += "{}-{}-".format(int(c["night_len_us"]), int(c["day_len_us"]))
     if t == "fake_strobe":
         FN_FORMAT += "{}-".format(c["num_racks_fake"])
+    if "details" in c:
+        FN_FORMAT += "{}-".format(c["details"])
 
     FN_FORMAT += '{}.{}'
     if config and c['packet_log']:

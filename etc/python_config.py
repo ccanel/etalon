@@ -14,7 +14,7 @@ TDF = 20.
 DATA_EXT_IF = 'enp68s0'  # As seen by physical nodes.
 DATA_INT_IF = 'eth1'  # As seen by containers.
 DATA_NET = 1
-DATA_RATE_Gbps_TDF = 40. / TDF  # Gbps
+DATA_RATE_Gbps_TDF = 5.5 / TDF  # Gbps
 
 # control network
 CONTROL_EXT_IF = 'eno4'  # As seen by physical nodes.
@@ -155,7 +155,7 @@ PGREP = "ps -e | pgrep {program}"
 # Send a signal to a process.
 KILL = "sudo kill -{signal} {process}"
 # iperf3
-IPERF3 = "iperf3 -p {port} -c {dst} -n {data_GB}G -P {parallel} -V -J"
+IPERF3 = "iperf3 -p {port} -c {dst} -n {data_B} -P {parallel} -V -J"
 
 # temporary files
 DID_BUILD_FN = '/tmp/docker_built'

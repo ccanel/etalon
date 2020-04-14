@@ -331,7 +331,7 @@ def run_iperf3(flw):
         host=flw["src"],
         cmd=IPERF3.format(
             port=IPERF3_PORT, dst=get_data_ip_from_host(flw["dst"]),
-            data_GB=flw["data_GB"], parallel=flw["parallel"]),
+            data_B=flw["data_B"], parallel=flw["parallel"]),
         sync=True))
 
 
