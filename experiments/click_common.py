@@ -87,6 +87,11 @@ def setQueueResize(b):
     time.sleep(0.1)
 
 
+def setExtraCircuitDelay(extra_circuit_del_s):
+    # Set an additional amount of circuit delay (in seconds).
+    clickWriteHandler('runner', 'extra_circuit_delay', extra_circuit_del_s)
+
+
 def getCounters():
     print "--- getting Click counters..."
     circuit_bytes = []
@@ -127,17 +132,19 @@ def divertACKs(divert):
 
 
 def setCircuitLinkDelay(delay):
+    # Set the circuit latency (in seconds).
     for i in xrange(1, NUM_RACKS + 1):
         clickWriteHandler('hybrid_switch/circuit_link%d/lu' % (i),
                           'latency', delay)
 
 
-def setPacketLinkBandwidth(bw):
+def setPacketLinkBandwidth(bw_Gbps):
+    # Set the packet network bandwidth, in Gbps.
     for i in xrange(1, NUM_RACKS + 1):
         clickWriteHandler('hybrid_switch/packet_up_link%d/lu' % (i),
-                          'bandwidth', '%.1fGbps' % bw)
+                          'bandwidth', '{}Gbps'.format(bw_Gbps))
         clickWriteHandler('hybrid_switch/ps/packet_link%d/lu' % (i),
-                          'bandwidth', '%.1fGbps' % bw)
+                          'bandwidth', '{}Gbps'.format(bw_Gbps))
 
 
 def setSolsticeThresh(thresh):
@@ -275,6 +282,8 @@ def setConfig(config):
     setQueueCap(c['small_queue_cap'], c['big_queue_cap'])
     setEstimateTrafficSource(c['traffic_source'])
     setInAdvance(c['in_advance'])
+    if "extra_circuit_del_s" in c:
+        setExtraCircuitDelay(c["extra_circuit_del_s"])
     common.setCC(c['cc'])
     setSolsticeThresh(c['thresh'])
 
