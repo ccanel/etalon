@@ -65,7 +65,7 @@ PACKET_LATENCY_s = PACKET_LATENCY_us / 1.e6
 PACKET_LATENCY_s_TDF = PACKET_LATENCY_s * TDF
 
 # reconfiguration penalty
-RECONFIG_DELAY_us = 20.
+RECONFIG_DELAY_us = 0.
 
 # where are handles defined
 NODES_FILE = '../etc/handles'
