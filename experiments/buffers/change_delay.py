@@ -8,6 +8,7 @@ PROGDIR = path.dirname(path.realpath(__file__))
 sys.path.insert(0, path.join(PROGDIR, ".."))
 # For python_config.
 sys.path.insert(0, path.join(PROGDIR, "..", "..", "etc"))
+import time
 
 import click_common
 import common
@@ -114,6 +115,7 @@ def main():
     stgs = stgs[:2]
     # Total number of experiments.
     tot = len(stgs)
+    tot_srt_s = time.time()
     # Run experiments. Use the first experiment's CC mode to avoid unnecessarily
     # restarting the cluster.
     maybe(lambda: common.initializeExperiment(
@@ -122,8 +124,13 @@ def main():
         cnf, flw_stgs = stg
         maybe(lambda cnf_=cnf: click_common.setConfig(cnf_))
         print("--- experiment {} of {}, config:\n{}".format(cnt, tot, stg))
+        exp_srt_s = time.time()
         maybe(lambda flw_stgs_=flw_stgs: common.iperf3(flw_stgs_))
+        print("Experiment duration: {:.2f} seconds".format(
+            time.time() - exp_srt_s))
     maybe(common.finishExperiment)
+    print("Total experiment duration: {:.2f} seconds".format(
+        time.time() - tot_srt_s))
 
 
 if __name__ == "__main__":
