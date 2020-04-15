@@ -18,6 +18,8 @@ import python_config
 DRY_RUN = False
 # If True, then collect tcpdump traces for every experiment.
 TCPDUMP = False
+# If True, then record the hybrid switch packet log.
+PACKET_LOG = False
 # If True, then racks will be launched in serial.
 SYNC = False
 # Amount of data to send.
@@ -100,7 +102,7 @@ def main():
                                         python_config.TDF),
                 "queue_resize": True,
                 "in_advance": int(round(IN_ADVANCE_US * python_config.TDF)),
-                "packet_log": True,
+                "packet_log": PACKET_LOG,
                 "cc": CC,
                 "details": "{}-{}-{}-{}".format(
                     delay_us, int(round(nw_switch_us)), queue_cap, par)
