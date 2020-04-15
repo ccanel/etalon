@@ -95,8 +95,11 @@ def main():
                     night_config=('-1/' * python_config.NUM_RACKS)[:-1]),
                 "small_queue_cap": queue_cap,
                 "big_queue_cap": int(round(queue_cap * SCALING_FACTOR)),
-                "small_nw_delay_us": delay_us,
-                "big_nw_delay_us": int(round(delay_us * SCALING_FACTOR)),
+                "circuit_link_delay": delay_us / 1.e6 * python_config.TDF,
+                # This is *extra* delay, so the scaling factor is
+                # SCALING_FACTOR - 1.
+                "extra_circuit_del_s": (delay_us / 1.e6 * (SCALING_FACTOR - 1) *
+                                        python_config.TDF),
                 "queue_resize": True,
                 "in_advance": int(round(IN_ADVANCE_US * python_config.TDF)),
                 "packet_log": True,
