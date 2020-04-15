@@ -137,14 +137,25 @@ def main():
     # restarting the cluster.
     maybe(lambda: common.initializeExperiment(
         "iperf3", cc=stgs[0][0]["cc"], sync=SYNC))
-    for cnt, stg  in enumerate(stgs, start=1):
+
+    # The iperf3 integration is very fragile and prone to transient errors. This
+    # loop will retry an experiment until it succeeds.
+    while stgs:
+        stg = stgs[-1]
         cnf, flw_stgs = stg
+
         maybe(lambda cnf_=cnf: click_common.setConfig(cnf_))
-        print("--- experiment {} of {}, config:\n{}".format(cnt, tot, stg))
+        print("--- {} of {} experiments remaining, config:\n{}".format(
+            len(stgs), tot, stg))
         exp_srt_s = time.time()
-        maybe(lambda flw_stgs_=flw_stgs: common.iperf3(flw_stgs_))
+        try:
+            maybe(lambda flw_stgs_=flw_stgs: common.iperf3(flw_stgs_))
+            stgs = stgs[:-1]
+        except:
+            print("Error: {}".format(sys.exc_info()[0]))
         print("Experiment duration: {:.2f} seconds".format(
             time.time() - exp_srt_s))
+
     maybe(common.finishExperiment)
     print("Total experiment duration: {:.2f} seconds".format(
         time.time() - tot_srt_s))
