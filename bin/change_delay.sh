@@ -11,7 +11,8 @@ function cleanup {
     rm -fv "$HOME"/1tb/*txt
 }
 
-rm -fv /tmp/docker_built
+# # Forced the docker image to be rebuilt.
+# rm -fv /tmp/docker_built
 
 cleanup
 # Flush the OS buffer cache.
