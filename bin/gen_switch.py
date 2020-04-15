@@ -10,7 +10,7 @@ sys.path.insert(0, path.join(PROGDIR, '..', 'etc'))
 from python_config import DATA_EXT_IF, NUM_RACKS, HOSTS_PER_RACK, \
     CIRCUIT_BW_Gbps_TDF, PACKET_BW_Gbps_TDF, CIRCUIT_LATENCY_s_TDF, \
     PACKET_LATENCY_s_TDF, RECONFIG_DELAY_us, TDF, CLICK_PORT, \
-    get_data_ip_from_host, get_phost_from_id, get_host_from_rack_and_id
+    get_data_ip_from_host, get_phost_from_id, get_host_from_rack_and_id, MTU
 
 log_poss = ["before", "after"]
 assert len(sys.argv) == 2, \
@@ -104,7 +104,7 @@ print 'runner :: RunSchedule($NUM_RACKS, RESIZE false)'
 print
 
 # entry and exit points
-print 'in :: FromDPDKDevice(0, MTU 9000)'
+print 'in :: FromDPDKDevice(0, MTU {})'.format(MTU)
 print 'out :: ToDPDKDevice(0)'
 print
 

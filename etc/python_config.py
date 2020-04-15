@@ -10,6 +10,9 @@ HOSTS_PER_RACK = 1
 
 TDF = 1.
 
+# MTU in bytes
+MTU = 1500
+
 # data network
 DATA_EXT_IF = 'enp68s0'  # As seen by physical nodes.
 DATA_INT_IF = 'eth1'  # As seen by containers.
