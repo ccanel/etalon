@@ -128,7 +128,6 @@ def main():
         for nw_switch_us in NW_SWITCH_USs
         for queue_cap in QUEUE_CAPS
         for par in PARS]
-    stgs = stgs[:2]
     # Total number of experiments.
     tot = len(stgs)
     tot_srt_s = time.time()
