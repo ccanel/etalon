@@ -36,7 +36,7 @@ BASE_DELAYS_US = [100, 200, 500, 1000]
 QUEUE_CAPS = [50, 100, 200, 400]
 NW_SWITCH_POW_MIN = 12
 NW_SWITCH_POW_MAX = 40
-NW_SWITCH_US = [
+NW_SWITCH_USs = [
     2 ** (nw_switch_pow / 2.)
     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
 PARS = [1, 5, 10, 20]
