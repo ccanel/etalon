@@ -20,8 +20,6 @@ DRY_RUN = False
 TCPDUMP = False
 # If True, then racks will be launched in serial.
 SYNC = False
-# How much to grow the delay (and ToR queues by).
-SCALING_FACTOR = 5.
 # Amount of data to send.
 DATA_B = int(round(4e9))
 # TCP variant.
@@ -42,16 +40,31 @@ IN_ADVANCE_US = 0
 #     2 ** (nw_switch_pow / 2.)
 #     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
 # PARS = [1, 5, 10, 20]
+# SCALING_FACTOR = 5.
 
-# Short sweep settings.
-BASE_DELAYS_US = [100, 500, 1000]
-QUEUE_CAPS = [100, 200, 400]
-NW_SWITCH_POW_MIN = 6
+
+# # Short sweep settings.
+# BASE_DELAYS_US = [100, 500, 1000]
+# QUEUE_CAPS = [100, 200, 400]
+# NW_SWITCH_POW_MIN = 6
+# NW_SWITCH_POW_MAX = 20
+# NW_SWITCH_USs = [
+#     2 ** nw_switch_pow
+#     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
+# PARS = [5, 10, 20]
+# SCALING_FACTOR = 5.
+
+
+# Debugging sweep settings.
+BASE_DELAYS_US = [1000]
+QUEUE_CAPS = [100]
+NW_SWITCH_POW_MIN = 20
 NW_SWITCH_POW_MAX = 20
 NW_SWITCH_USs = [
     2 ** nw_switch_pow
     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
-PARS = [5, 10, 20]
+PARS = [5]
+SCALING_FACTOR = 100.
 
 
 def maybe(fnc, do=not DRY_RUN):
