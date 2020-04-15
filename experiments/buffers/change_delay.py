@@ -23,15 +23,13 @@ PACKET_LOG = False
 # If True, then racks will be launched in serial.
 SYNC = False
 # Amount of data to send.
-DATA_B = int(round(4e9))
+DATA_B = 4e9
 # TCP variant.
 CC = "cubic"
 # Circuit downtime between configurations.
 NIGHT_LEN_US = 0
 # Source rack for traffic flows. 0-indexed.
 SRC_RACK = 1
-# How long in advance to resize ToR queues.
-IN_ADVANCE_US = 0
 
 # Long sweep settings.
 BASE_DELAYS_US = [100, 200, 500, 1000]
@@ -74,6 +72,9 @@ def maybe(fnc, do=not DRY_RUN):
 
 
 def main():
+    get_extra_us = lambda delay_us: delay_us * (SCALING_FACTOR - 1)
+    tdf = lambda val: val * python_config.TDF
+    intify = lambda val: int(round(val))
     # Assemble settings. Generate the list of settings first so that we know the
     # total number of experiments.
     stgs = [
@@ -87,25 +88,26 @@ def main():
                 "fixed_schedule": (
                     "2 {day_len_us} {day_config} {night_len_us} {night_config}"
                 ).format(
-                    day_len_us=int(round(nw_switch_us * python_config.TDF)),
+                    day_len_us=intify(tdf(nw_switch_us)),
                     day_config="".join([
                         "{}/".format((rack + 1) % python_config.NUM_RACKS)
                         for rack in xrange(python_config.NUM_RACKS)])[:-1],
-                    night_len_us=int(round(NIGHT_LEN_US * python_config.TDF)),
+                    night_len_us=intify(tdf(NIGHT_LEN_US)),
                     night_config=('-1/' * python_config.NUM_RACKS)[:-1]),
                 "small_queue_cap": queue_cap,
-                "big_queue_cap": int(round(queue_cap * SCALING_FACTOR)),
-                "circuit_link_delay": delay_us / 1.e6 * python_config.TDF,
+                "big_queue_cap": intify(queue_cap * SCALING_FACTOR),
+                "circuit_link_delay": tdf(delay_us / 1e6),
                 # This is *extra* delay, so the scaling factor is
                 # SCALING_FACTOR - 1.
-                "extra_circuit_del_s": (delay_us / 1.e6 * (SCALING_FACTOR - 1) *
-                                        python_config.TDF),
+                "extra_circuit_del_s": tdf(get_extra_us(delay_us) / 1e6 *
+                                           (SCALING_FACTOR - 1)),
                 "queue_resize": True,
-                "in_advance": int(round(IN_ADVANCE_US * python_config.TDF)),
+                "in_advance": intify(tdf(min(
+                    0.75 * nw_switch_us, get_extra_us(delay_us)))),
                 "packet_log": PACKET_LOG,
                 "cc": CC,
                 "details": "{}-{}-{}-{}".format(
-                    delay_us, int(round(nw_switch_us)), queue_cap, par)
+                    delay_us, intify(nw_switch_us), queue_cap, par)
             },
             {
                 # Generate a number of parallel flows from the first host on rack 1
@@ -117,7 +119,7 @@ def main():
                         # the the rack after the source rack.
                         "dst": "h{}{}".format(
                             ((SRC_RACK - 1) % python_config.NUM_RACKS) + 1, 1),
-                        "data_B": DATA_B,
+                        "data_B": intify(DATA_B),
                         "parallel": par
                     }
                 ],
