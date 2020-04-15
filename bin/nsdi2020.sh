@@ -11,12 +11,13 @@ function cleanup {
     rm -fv "$HOME"/1tb/*txt
 }
 
-rm -fv /tmp/docker_built
+# # Forced the docker image to be rebuilt.
+# rm -fv /tmp/docker_built
 
 cleanup
 # Flush the OS buffer cache.
 sudo sync;
-echo "1" | sudo tee /proc/sys/vm/drop_caches
+echo "3" | sudo tee /proc/sys/vm/drop_caches
 # Run experiments.
 "$HOME"/etalon/experiments/buffers/nsdi2020.py
 cleanup
