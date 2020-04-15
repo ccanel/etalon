@@ -103,7 +103,7 @@ def main():
                 "packet_log": True,
                 "cc": CC,
                 "details": "{}-{}-{}-{}".format(
-                    delay_us, nw_switch_us, queue_cap, par)
+                    delay_us, int(round(nw_switch_us)), queue_cap, par)
             },
             {
                 # Generate a number of parallel flows from the first host on rack 1
