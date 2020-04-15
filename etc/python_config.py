@@ -158,7 +158,7 @@ PGREP = "ps -e | pgrep {program}"
 # Send a signal to a process.
 KILL = "sudo kill -{signal} {process}"
 # iperf3
-IPERF3 = "iperf3 -p {port} -c {dst} -n {data_B} -P {parallel} -V -J"
+IPERF3 = "iperf3 -p {port} -c {dst} -n {data_B} -P {parallel} -J"
 
 # temporary files
 DID_BUILD_FN = '/tmp/docker_built'
