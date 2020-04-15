@@ -26,33 +26,33 @@ DATA_B = int(round(4e9))
 CC = "cubic"
 # Circuit downtime between configurations.
 NIGHT_LEN_US = 0
-# Source rack for traffic flows.
+# Source rack for traffic flows. 0-indexed.
 SRC_RACK = 1
 # How long in advance to resize ToR queues.
 IN_ADVANCE_US = 0
 
-# # Long sweep settings.
-# BASE_DELAYS_US = [100, 200, 500, 1000]
-# QUEUE_CAPS = [50, 100, 200, 400]
-# NW_SWITCH_POW_MIN = 12
-# NW_SWITCH_POW_MAX = 40
-# NW_SWITCH_US = [
-#     2 ** (nw_switch_pow / 2.)
-#     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
-# PARS = [1, 5, 10, 20]
-# SCALING_FACTOR = 5.
+# Long sweep settings.
+BASE_DELAYS_US = [100, 200, 500, 1000]
+QUEUE_CAPS = [50, 100, 200, 400]
+NW_SWITCH_POW_MIN = 12
+NW_SWITCH_POW_MAX = 40
+NW_SWITCH_US = [
+    2 ** (nw_switch_pow / 2.)
+    for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
+PARS = [1, 5, 10, 20]
+SCALING_FACTOR = 5.
 
 
-# # Short sweep settings.
-# BASE_DELAYS_US = [100, 500, 1000]
-# QUEUE_CAPS = [100, 200, 400]
-# NW_SWITCH_POW_MIN = 6
-# NW_SWITCH_POW_MAX = 20
-# NW_SWITCH_USs = [
-#     2 ** nw_switch_pow
-#     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
-# PARS = [5, 10, 20]
-# SCALING_FACTOR = 5.
+# Short sweep settings.
+BASE_DELAYS_US = [100, 500, 1000]
+QUEUE_CAPS = [100, 200, 400]
+NW_SWITCH_POW_MIN = 6
+NW_SWITCH_POW_MAX = 20
+NW_SWITCH_USs = [
+    2 ** nw_switch_pow
+    for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
+PARS = [5, 10, 20]
+SCALING_FACTOR = 5.
 
 
 # Debugging sweep settings.
