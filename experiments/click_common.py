@@ -278,7 +278,6 @@ def setConfig(config):
          'day_len_us': RECONFIG_DELAY_us * TDF * 9}
 
     c.update(config)
-    clearCounters()
     setQueueCap(c['small_queue_cap'], c['big_queue_cap'])
     setEstimateTrafficSource(c['traffic_source'])
     setInAdvance(c['in_advance'])
@@ -343,3 +342,4 @@ def setConfig(config):
         setLog('/tmp/' + FN_FORMAT.format('click', 'txt'))
     if not c['packet_log']:
         disableLog()
+    clearCounters()
