@@ -112,11 +112,11 @@ def main():
                 # to the first host on rack 2.
                 "flows": [
                     {
-                        "src": "h{}{}".format(SRC_RACK, 1),
+                        "src": "h{}{}".format(SRC_RACK + 1, 1),
                         # The schedule is a cycle, so the destination rack is
                         # the the rack after the source rack.
                         "dst": "h{}{}".format(
-                            (SRC_RACK + 1) % python_config.NUM_RACKS, 1),
+                            ((SRC_RACK - 1) % python_config.NUM_RACKS) + 1, 1),
                         "data_B": DATA_B,
                         "parallel": par
                     }
