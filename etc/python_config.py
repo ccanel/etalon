@@ -8,7 +8,7 @@ import collections
 NUM_RACKS = 3
 HOSTS_PER_RACK = 1
 
-TDF = 20.
+TDF = 1.
 
 # data network
 DATA_EXT_IF = 'enp68s0'  # As seen by physical nodes.
