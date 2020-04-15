@@ -42,29 +42,27 @@ NW_SWITCH_US = [
 PARS = [1, 5, 10, 20]
 SCALING_FACTOR = 5.
 
+# # Short sweep settings.
+# BASE_DELAYS_US = [100, 500, 1000]
+# QUEUE_CAPS = [100, 200, 400]
+# NW_SWITCH_POW_MIN = 6
+# NW_SWITCH_POW_MAX = 20
+# NW_SWITCH_USs = [
+#     2 ** nw_switch_pow
+#     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
+# PARS = [5, 10, 20]
+# SCALING_FACTOR = 5.
 
-# Short sweep settings.
-BASE_DELAYS_US = [100, 500, 1000]
-QUEUE_CAPS = [100, 200, 400]
-NW_SWITCH_POW_MIN = 6
-NW_SWITCH_POW_MAX = 20
-NW_SWITCH_USs = [
-    2 ** nw_switch_pow
-    for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
-PARS = [5, 10, 20]
-SCALING_FACTOR = 5.
-
-
-# Debugging sweep settings.
-BASE_DELAYS_US = [1000]
-QUEUE_CAPS = [100]
-NW_SWITCH_POW_MIN = 20
-NW_SWITCH_POW_MAX = 20
-NW_SWITCH_USs = [
-    2 ** nw_switch_pow
-    for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
-PARS = [5]
-SCALING_FACTOR = 100.
+# # Debugging sweep settings.
+# BASE_DELAYS_US = [1000]
+# QUEUE_CAPS = [100]
+# NW_SWITCH_POW_MIN = 20
+# NW_SWITCH_POW_MAX = 20
+# NW_SWITCH_USs = [
+#     2 ** nw_switch_pow
+#     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
+# PARS = [5]
+# SCALING_FACTOR = 100.
 
 
 def maybe(fnc, do=not DRY_RUN):
