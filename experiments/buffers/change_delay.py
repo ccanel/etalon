@@ -72,7 +72,7 @@ def maybe(fnc, do=not DRY_RUN):
 
 
 def main():
-    get_extra_us = lambda delay_us: delay_us * (SCALING_FACTOR - 1)
+    # Convenience functions.
     tdf = lambda val: val * python_config.TDF
     intify = lambda val: int(round(val))
     # Assemble settings. Generate the list of settings first so that we know the
@@ -96,14 +96,11 @@ def main():
                     night_config=('-1/' * python_config.NUM_RACKS)[:-1]),
                 "small_queue_cap": queue_cap,
                 "big_queue_cap": intify(queue_cap * SCALING_FACTOR),
-                "circuit_link_delay": tdf(delay_us / 1e6),
-                # This is *extra* delay, so the scaling factor is
-                # SCALING_FACTOR - 1.
-                "extra_circuit_del_s": tdf(get_extra_us(delay_us) / 1e6 *
-                                           (SCALING_FACTOR - 1)),
+                "small_circuit_lat_s": tdf(delay_us / 1e6),
+                "big_circuit_lat_s": tdf((delay_us * SCALING_FACTOR) / 1e6),
                 "queue_resize": True,
                 "in_advance": intify(tdf(min(
-                    0.75 * nw_switch_us, get_extra_us(delay_us)))),
+                    0.75 * nw_switch_us, delay_us * (SCALING_FACTOR - 1)))),
                 "packet_log": PACKET_LOG,
                 "cc": CC,
                 "details": "{}-{}-{}-{}".format(
