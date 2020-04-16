@@ -139,7 +139,7 @@ def setCircuitLinkDelay(delay):
 def setCircuitLinkDelayInRunner(small_circuit_lat_s, big_circuit_lat_s):
     # Set the short and long circuit latencies (in seconds).
     clickWriteHandler('runner', 'circuit_latency',
-                      "{},{}".format(small_circuit_lat_s, big_circuit_lat_s)))
+                      "{},{}".format(small_circuit_lat_s, big_circuit_lat_s))
 
 
 def setPacketLinkBandwidth(bw_Gbps):
