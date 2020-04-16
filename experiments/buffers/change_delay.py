@@ -9,6 +9,7 @@ sys.path.insert(0, path.join(PROGDIR, ".."))
 # For python_config.
 sys.path.insert(0, path.join(PROGDIR, "..", "..", "etc"))
 import time
+import traceback
 
 import click_common
 import common
@@ -149,7 +150,7 @@ def main():
             maybe(lambda flw_stgs_=flw_stgs: common.iperf3(flw_stgs_))
             stgs = stgs[:-1]
         except:
-            print("Error: {}".format(sys.exc_info()[0]))
+            traceback.print_exc()
         print("Experiment duration: {:.2f} seconds".format(
             time.time() - exp_srt_s))
 
