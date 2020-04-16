@@ -33,6 +33,7 @@ def clickWriteHandler(element, handler, value):
     response = CLICK_SOCKET.recv(CLICK_BUFFER_SIZE).strip()
     print response
     assert int(response.split("\n")[-1].split(" ")[0]) == 200, response
+    time.sleep(0.1)
 
 
 def clickReadHandler(element, handler):
@@ -50,13 +51,11 @@ def setLog(log):
     clickWriteHandler('hsl', 'openLog', log)
     if log != '/tmp/hslog.log':
         EXPERIMENTS.append(log)
-    time.sleep(0.1)
 
 
 def disableLog():
     print 'disabling packet logging'
     clickWriteHandler('hsl', 'disableLog', '')
-    time.sleep(0.1)
 
 
 def setQueueCap(s_cap, b_cap):
@@ -71,7 +70,6 @@ def setQueueCap(s_cap, b_cap):
             clickWriteHandler("hybrid_switch/q{}{}/q".format(src, dst),
                               "resize_capacity", s_cap)
     clickWriteHandler("runner", "queue_capacity", "{},{}".format(s_cap, b_cap))
-    time.sleep(0.1)
 
 
 def setEstimateTrafficSource(source):
@@ -84,7 +82,6 @@ def setInAdvance(in_advance):
 
 def setQueueResize(b):
     clickWriteHandler('runner', 'setDoResize', 'true' if b else 'false')
-    time.sleep(0.1)
 
 
 def setExtraCircuitDelay(extra_circuit_del_s):
@@ -156,12 +153,10 @@ def setSolsticeThresh(thresh):
 ##
 def enableSolstice():
     clickWriteHandler('sol', 'setEnabled', 'true')
-    time.sleep(0.1)
 
 
 def disableSolstice():
     clickWriteHandler('sol', 'setEnabled', 'false')
-    time.sleep(0.1)
 
 
 def disableCircuit():
@@ -231,13 +226,11 @@ def setCircuitSchedule(configuration):
 def setFixedSchedule(schedule):
     disableSolstice()
     clickWriteHandler('runner', 'setSchedule', schedule)
-    time.sleep(0.1)
 
 
 def setEceEnabled(enabled):
     """ Enable/disable ECE marking. """
     clickWriteHandler('ecem', 'enabled', 'true' if enabled else 'false')
-    time.sleep(0.1)
 
 
 def setEcnEnabled(enabled):
@@ -247,7 +240,6 @@ def setEcnEnabled(enabled):
         for dst in xrange(1, NUM_RACKS + 1):
             clickWriteHandler('hybrid_switch/q{}{}/q'.format(src, dst),
                               'marking_enabled', val)
-    time.sleep(0.1)
 
 
 def setEcnThresh(threshs):
@@ -264,7 +256,6 @@ def setEcnThresh(threshs):
                               'marking_threshold', s_thresh)
     clickWriteHandler("runner", "marking_threshold",
                       "{},{}".format(s_thresh, b_thresh))
-    time.sleep(0.1)
 
 
 def setConfig(config):
