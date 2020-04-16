@@ -173,8 +173,6 @@ print 'elementclass circuit_link {'
 print '  input%s' % (str(list(xrange(NUM_RACKS))))
 print '    => ps :: SimplePullSwitch(-1)'
 print '    -> lu :: LinkUnqueue($CIRCUIT_LATENCY_s_TDF, $CIRCUIT_BW_Gbps_TDF)'
-print '    -> Queue'
-print '    -> du :: DelayUnqueue(0)'  # To enable adding additional delay
 print '    -> StoreData(1, 1) -> SetIPChecksum'  # did packet go over circuit?
 print '    -> output'
 print '}'
