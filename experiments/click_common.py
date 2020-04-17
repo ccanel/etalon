@@ -11,7 +11,8 @@ import time
 import common
 from python_config import NUM_RACKS, TIMESTAMP, SCRIPT, TDF, EXPERIMENTS, \
     CLICK_ADDR, CLICK_PORT, CLICK_BUFFER_SIZE, DEFAULT_CIRCUIT_CONFIG, \
-    CIRCUIT_LATENCY_s_TDF, RECONFIG_DELAY_us, PACKET_BW_Gbps_TDF, DEFAULT_CC
+    CIRCUIT_LATENCY_s_TDF, RECONFIG_DELAY_us, PACKET_BW_Gbps_TDF, DEFAULT_CC, \
+    CIRCUIT_BW_Gbps_TDF, PACKET_LATENCY_s_TDF
 
 CLICK_SOCKET = None
 FN_FORMAT = ''
@@ -128,26 +129,35 @@ def divertACKs(divert):
     clickWriteHandler('divert_acks', 'switch', 1 if divert else 0)
 
 
-def setCircuitLinkDelay(delay):
+def setCircuitLinkDelay(delay_s):
     # Set the current circuit latency (in seconds).
     for i in xrange(1, NUM_RACKS + 1):
-        clickWriteHandler('hybrid_switch/circuit_link%d/lu' % (i),
-                          'latency', delay)
-    setCircuitLinkDelayInRunner(delay, delay)
+        clickWriteHandler('hybrid_switch/circuit_link{}/lu'.format(i),
+                          'latency', delay_s)
 
 
-def setCircuitLinkDelayInRunner(small_circuit_lat_s, big_circuit_lat_s):
-    # Set the short and long circuit latencies (in seconds).
-    clickWriteHandler('runner', 'circuit_latency',
-                      "{},{}".format(small_circuit_lat_s, big_circuit_lat_s))
+def setPacketLinkDelay(delay_s):
+    # Set the packet network bandwidth, in Gbps.
+    for i in xrange(1, NUM_RACKS + 1):
+        clickWriteHandler('hybrid_switch/packet_up_link{}/lu'.format(i),
+                          'latency', delay_s)
+        clickWriteHandler('hybrid_switch/ps/packet_link{}/lu'.format(i),
+                          'latency', delay_s)
+
+
+def setCircuitLinkBandwidth(bw_Gbps):
+    # Set the current circuit bandwidth (in seconds).
+    for i in xrange(1, NUM_RACKS + 1):
+        clickWriteHandler('hybrid_switch/circuit_link{}/lu'.format(i),
+                          'bandwidth', "{}Gbps".format(bw_Gbps))
 
 
 def setPacketLinkBandwidth(bw_Gbps):
     # Set the packet network bandwidth, in Gbps.
     for i in xrange(1, NUM_RACKS + 1):
-        clickWriteHandler('hybrid_switch/packet_up_link%d/lu' % (i),
+        clickWriteHandler('hybrid_switch/packet_up_link{}/lu'.format(i),
                           'bandwidth', '{}Gbps'.format(bw_Gbps))
-        clickWriteHandler('hybrid_switch/ps/packet_link%d/lu' % (i),
+        clickWriteHandler('hybrid_switch/ps/packet_link{}/lu'.format(i),
                           'bandwidth', '{}Gbps'.format(bw_Gbps))
 
 
@@ -267,12 +277,22 @@ def setEcnThresh(threshs):
 
 def setConfig(config):
     global FN_FORMAT
-    c = {'type': 'normal', 'small_queue_cap': 16, 'big_queue_cap': 128,
-         'traffic_source': 'QUEUE', 'queue_resize': False,
-         'in_advance': 12000, 'cc': DEFAULT_CC, 'packet_log': True,
-         'divert_acks': False, 'small_circuit_lat_s': CIRCUIT_LATENCY_s_TDF,
-         'packet_link_bandwidth': PACKET_BW_Gbps_TDF, 'hdfs': False,
-         'thresh': 1000000, 'night_len_us': RECONFIG_DELAY_us * TDF,
+    c = {'type': 'normal',
+         'small_queue_cap': 16,
+         'big_queue_cap': 128,
+         'traffic_source': 'QUEUE',
+         'queue_resize': False,
+         'in_advance': 12000,
+         'cc': DEFAULT_CC,
+         'packet_log': True,
+         'divert_acks': False,
+         'circuit_lat_s': CIRCUIT_LATENCY_s_TDF,
+         'packet_lat_s': PACKET_LATENCY_s_TDF,
+         "circuit_bw_Gbps": CIRCUIT_BW_Gbps_TDF,
+         'packet_bw_Gbps': PACKET_BW_Gbps_TDF,
+         'hdfs': False,
+         'thresh': 1000000,
+         'night_len_us': RECONFIG_DELAY_us * TDF,
          'day_len_us': RECONFIG_DELAY_us * TDF * 9}
 
     c.update(config)
@@ -314,14 +334,13 @@ def setConfig(config):
     setQueueResize(c['queue_resize'])
 
     divertACKs(c['divert_acks'])
-    setCircuitLinkDelay(c['small_circuit_lat_s'])
-    if "big_circuit_lat_s" in c:
-        setCircuitLinkDelayInRunner(
-            c["small_circuit_lat_s"], c["big_circuit_lat_s"])
 
-    setPacketLinkBandwidth(c['packet_link_bandwidth'])
+    setCircuitLinkDelay(c['circuit_lat_s'])
+    setPacketLinkDelay(c["packet_lat_s"])
+    setPacketLinkBandwidth(c['packet_bw_Gbps'])
+    setCircuitLinkBandwidth(c['circuit_bw_Gbps'])
 
-    FN_FORMAT = "{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-".format(
+    FN_FORMAT = "{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-".format(
         TIMESTAMP, SCRIPT, t,
         c["small_queue_cap"],
         c["big_queue_cap"],
@@ -329,8 +348,10 @@ def setConfig(config):
         c["queue_resize"],
         c["in_advance"],
         c["cc"],
-        c["small_circuit_lat_s"],
-        c["packet_link_bandwidth"],
+        c["circuit_lat_s"],
+        c["packet_lat_s"],
+        c["circuit_bw_Gbps"],
+        c["packet_bw_Gbps"],
         c["hdfs"])
     if t in ["fake_strobe", "strobe"]:
         FN_FORMAT += "{}-{}-".format(int(c["night_len_us"]), int(c["day_len_us"]))

@@ -31,28 +31,30 @@ CC = "cubic"
 NIGHT_LEN_US = 0
 # Source rack for traffic flows. 0-indexed.
 SRC_RACK = 1
+# Bandwidth for all links.
+BW_Gbps = 5.5
 
-# Long sweep settings.
-BASE_DELAYS_US = [100, 200, 500, 1000]
-QUEUE_CAPS = [50, 100, 200, 400]
-NW_SWITCH_POW_MIN = 12
-NW_SWITCH_POW_MAX = 40
-NW_SWITCH_USs = [
-    2 ** (nw_switch_pow / 2.)
-    for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
-PARS = [1, 5, 10, 20]
-SCALING_FACTOR = 5.
-
-# # Short sweep settings.
-# BASE_DELAYS_US = [100, 500, 1000]
-# QUEUE_CAPS = [100, 200, 400]
-# NW_SWITCH_POW_MIN = 6
-# NW_SWITCH_POW_MAX = 20
+# # Long sweep settings.
+# BASE_DELAYS_US = [100, 200, 500, 1000]
+# QUEUE_CAPS = [50, 100, 200, 400]
+# NW_SWITCH_POW_MIN = 12
+# NW_SWITCH_POW_MAX = 40
 # NW_SWITCH_USs = [
-#     2 ** nw_switch_pow
+#     2 ** (nw_switch_pow / 2.)
 #     for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
-# PARS = [5, 10, 20]
+# PARS = [1, 5, 10, 20]
 # SCALING_FACTOR = 5.
+
+# Short sweep settings.
+BASE_DELAYS_US = [100, 500, 1000]
+QUEUE_CAPS = [100, 200, 400]
+NW_SWITCH_POW_MIN = 6
+NW_SWITCH_POW_MAX = 20
+NW_SWITCH_USs = [
+    2 ** nw_switch_pow
+    for nw_switch_pow in xrange(NW_SWITCH_POW_MIN, NW_SWITCH_POW_MAX + 1)]
+PARS = [5, 10, 20]
+SCALING_FACTOR = 5.
 
 # # Debugging sweep settings.
 # BASE_DELAYS_US = [1000]
@@ -82,30 +84,43 @@ def main():
         (
             {
                 "type": "fixed",
-                # Define a cycle schedule, where each rack connects to the next
-                # rack. A week consists of one day and one night. The day length
-                # is set to the desired network reconfiguration period. The
-                # night length is (probably) set to 0.
                 "fixed_schedule": (
-                    "2 {day_len_us} {day_config} {night_len_us} {night_config}"
+                    "4 "
+                    # "{nw_switch_us} {config_long_lat} "
+                    "{nw_switch_us} {config_short_lat} "
+                    "0 {config_night} "
+                    "{nw_switch_us} {config_long_lat} "
+                    # "{nw_switch_us} {config_short_lat} "
+                    "0 {config_night}"
                 ).format(
-                    day_len_us=intify(tdf(nw_switch_us)),
-                    day_config="".join([
+                    # Disable network.
+                    config_night=("-1/" * python_config.NUM_RACKS)[:-1],
+                    # The short (circuit) and long (packet) paths will be active
+                    # for the same duration.
+                    nw_switch_us=nw_switch_us,
+                    config_short_lat="".join([
                         "{}/".format((rack + 1) % python_config.NUM_RACKS)
                         for rack in xrange(python_config.NUM_RACKS)])[:-1],
-                    night_len_us=intify(tdf(NIGHT_LEN_US)),
-                    night_config=('-1/' * python_config.NUM_RACKS)[:-1]),
+                    config_long_lat="".join([
+                        "{}/".format((rack + 2) % python_config.NUM_RACKS)
+                        for rack in xrange(python_config.NUM_RACKS)])[:-1],
+                ),
                 "small_queue_cap": queue_cap,
                 "big_queue_cap": intify(queue_cap * SCALING_FACTOR),
-                "small_circuit_lat_s": tdf(delay_us / 1e6),
-                "big_circuit_lat_s": tdf((delay_us * SCALING_FACTOR) / 1e6),
+                "circuit_lat_s": tdf(delay_us / 1e6),
+                # Divide by 2 because the packet path has two links that will
+                # each receive the same delay.
+                "packet_lat_s": tdf((delay_us * SCALING_FACTOR) / 1e6 / 2.),
+                "circuit_bw_Gbps": BW_Gbps,
+                "packet_bw_Gbps": BW_Gbps,
                 "queue_resize": True,
                 "in_advance": intify(tdf(min(
                     0.75 * nw_switch_us, delay_us * (SCALING_FACTOR - 1)))),
                 "packet_log": PACKET_LOG,
                 "cc": CC,
-                "details": "{}-{}-{}-{}".format(
-                    delay_us, intify(nw_switch_us), queue_cap, par)
+                # Add the network switch period and number of parallel flows to
+                # the filename.
+                "details": "{}-{}".format(intify(nw_switch_us), par)
             },
             {
                 # Generate a number of parallel flows from the first host on rack 1
