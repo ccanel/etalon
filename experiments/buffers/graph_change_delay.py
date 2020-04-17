@@ -5,6 +5,10 @@ from os import path
 
 from matplotlib import pyplot as plt
 
+
+FONTSIZE = 15
+
+
 def main():
     # Parse command line arguments.
     parser = argparse.ArgumentParser(
@@ -18,7 +22,7 @@ def main():
     args = parser.parse_args()
 
     data = []
-    for toks in [lin.split(",") for lin  in open(args.exp_file, "r")]:
+    for toks in [lin.split(",") for lin  in open(args.exp_file, "r")][1:]:
         data.append({
             "ts_s": int(toks[0]),
             "nw_switch_us": int(toks[1]),
@@ -34,25 +38,33 @@ def main():
             "bps": float(toks[11])
         })
 
-    get_all = lambda key: list(set([d[key] for d in data]))
+    get_all = lambda key: sorted(list(set([d[key] for d in data])))
     delay_uss = get_all("short_delay_us")
     queue_caps = get_all("small_queue_cap")
     pars = get_all("par")
 
     for delay_us in delay_uss:
         for queue_cap in queue_caps:
+            plt.figure(figsize=(6, 4))
+            # Plot each number of flows as a different line.
             for par in pars:
-                # Select only the results with this bandwidth and delay, and pick
-                # the value of the ACK period as the x value. Then, split the (x, y)
-                # pairs into a list of xs and a list of ys.
-                xs, ys = zip(*[(d["nw_switch_us"], d["secs"]) for d in data
-                               if (d["delay_us"] == delay_us and
-                                   d["queue_cap"] == queue_cap and
-                                   d["par"] == par)])
+                # Select only the results with this delay, queue capacity, and
+                # parallel flows. Pick the network switch period as the x value
+                # and the flow completion time as the y value. Then, split the
+                # (x, y) pairs into a list of xs and a list of ys.
+                xs, ys = zip(*sorted(
+                    [(d["nw_switch_us"], d["secs"]) for d in data
+                     if (d["short_delay_us"] == delay_us and
+                         d["small_queue_cap"] == queue_cap and
+                         d["par"] == par)]))
                 plt.plot(xs, ys)
-            plt.legend(pars)
-            plt.xlabel("Network switch period (s)")
-            plt.ylabel("Flow completion time (s)")
+            plt.xscale("log")
+            plt.legend(pars, fontsize=FONTSIZE)
+            plt.xlabel("Network switch period (s)", fontsize=FONTSIZE)
+            plt.ylabel("Flow completion time (s)", fontsize=FONTSIZE)
+            plt.xticks(fontsize=FONTSIZE)
+            plt.yticks(fontsize=FONTSIZE)
+            plt.tight_layout()
             plt.savefig(path.join(
                 args.out_dir, "{}us_{}packets.pdf".format(delay_us, queue_cap)))
             plt.close()

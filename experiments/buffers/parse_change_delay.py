@@ -56,7 +56,7 @@ def main():
     # Create output CSV file.
     with open(args.out_file, "w") as fil:
         fil.write((
-            "experiment id,"
+            "#experiment id,"
             "network switch period (us),"
             "bandwidth (Gbps),"
             "short path delay (us),"
