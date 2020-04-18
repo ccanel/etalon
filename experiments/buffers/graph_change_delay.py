@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 
 
 FONTSIZE = 15
+MARKERS = ["o", "s", "D"]
 
 
 def main():
@@ -43,11 +44,19 @@ def main():
     queue_caps = get_all("small_queue_cap")
     pars = get_all("par")
 
+    # Figure out the maximum x and y values so that we can keep all of the
+    # dimensions the same to make it easier to compare across graphs.
+    all_xs = get_all("nw_switch_us")
+    xmin = min(all_xs)
+    xmax = max(all_xs)
+    ymin = 0
+    ymax = max(get_all("secs")) * 1.1
+
     for delay_us in delay_uss:
-        for queue_cap in queue_caps:
+        for par in pars:
             plt.figure(figsize=(6, 4))
             # Plot each number of flows as a different line.
-            for par in pars:
+            for i, queue_cap in enumerate(queue_caps):
                 # Select only the results with this delay, queue capacity, and
                 # parallel flows. Pick the network switch period as the x value
                 # and the flow completion time as the y value. Then, split the
@@ -57,16 +66,20 @@ def main():
                      if (d["short_delay_us"] == delay_us and
                          d["small_queue_cap"] == queue_cap and
                          d["par"] == par)]))
-                plt.plot(xs, ys)
+                plt.plot(xs, ys, marker=MARKERS[i])
             plt.xscale("log")
-            plt.legend(pars, fontsize=FONTSIZE)
+            plt.legend(
+                ["{} packets".format(queue_cap) for queue_cap in queue_caps],
+                fontsize=FONTSIZE)
             plt.xlabel("Network switch period (s)", fontsize=FONTSIZE)
             plt.ylabel("Flow completion time (s)", fontsize=FONTSIZE)
             plt.xticks(fontsize=FONTSIZE)
             plt.yticks(fontsize=FONTSIZE)
+            plt.xlim((xmin, xmax))
+            plt.ylim((ymin, ymax))
             plt.tight_layout()
             plt.savefig(path.join(
-                args.out_dir, "{}us_{}packets.pdf".format(delay_us, queue_cap)))
+                args.out_dir, "{}us_{}flows.pdf".format(delay_us, par)))
             plt.close()
 
 
