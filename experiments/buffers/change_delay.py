@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from os import path
+import signal
 import sys
 # Directory containing this program.
 PROGDIR = path.dirname(path.realpath(__file__))
@@ -68,6 +69,20 @@ SCALING_FACTOR = 5.
 # SCALING_FACTOR = 100.
 
 
+# From: https://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish
+class timeout:
+    def __init__(self, seconds=1, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+    def handle_timeout(self, signum, frame):
+        raise RuntimeError(self.error_message)
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+    def __exit__(self, typ, value, tracebck):
+        signal.alarm(0)
+
+
 def maybe(fnc, do=not DRY_RUN):
     """ Executes "fnc" if "do" is True, otherwise does nothing. """
     if do:
@@ -80,7 +95,7 @@ def main():
     intify = lambda val: int(round(val))
     # Assemble settings. Generate the list of settings first so that we know the
     # total number of experiments.
-    stgs = [
+    stgs = sorted([
         (
             {
                 "type": "fixed",
@@ -142,32 +157,39 @@ def main():
         for delay_us in BASE_DELAYS_US
         for nw_switch_us in NW_SWITCH_USs
         for queue_cap in QUEUE_CAPS
-        for par in PARS]
+        for par in PARS])
     # Total number of experiments.
     tot = len(stgs)
     tot_srt_s = time.time()
-    # Run experiments. Use the first experiment's CC mode to avoid unnecessarily
-    # restarting the cluster.
-    maybe(lambda: common.initializeExperiment(
-        "iperf3", cc=stgs[0][0]["cc"], sync=SYNC))
-
-    # The iperf3 integration is very fragile and prone to transient errors. This
-    # loop will retry an experiment until it succeeds.
     while stgs:
-        stg = stgs[-1]
-        cnf, flw_stgs = stg
+        # The iperf3 integration is very fragile and prone to transient errors.
+        # This loop will retry an experiment until it succeeds.
 
-        maybe(lambda cnf_=cnf: click_common.setConfig(cnf_))
-        print("--- {} of {} experiments remaining, config:\n{}".format(
-            len(stgs), tot, stg))
-        exp_srt_s = time.time()
-        try:
-            maybe(lambda flw_stgs_=flw_stgs: common.iperf3(flw_stgs_))
-            stgs = stgs[:-1]
-        except:
-            traceback.print_exc()
-        print("Experiment duration: {:.2f} seconds".format(
-            time.time() - exp_srt_s))
+        # Use the first experiment's CC mode to avoid unnecessarily restarting
+        # the cluster.
+        maybe(lambda: common.initializeExperiment(
+            "iperf3", cc=stgs[0][0]["cc"], sync=SYNC))
+
+        while stgs:
+            stg = stgs[-1]
+            cnf, flw_stgs = stg
+
+            maybe(lambda cnf_=cnf: click_common.setConfig(cnf_))
+            print("--- {} of {} experiments remaining, config:\n{}".format(
+                len(stgs), tot, stg))
+            exp_srt_s = time.time()
+            try:
+                #with timeout(seconds=120):
+                maybe(lambda flw_stgs_=flw_stgs: common.iperf3(flw_stgs_))
+                print("Experiment duration: {:.2f} seconds".format(
+                    time.time() - exp_srt_s))
+                stgs = stgs[:-1]
+            except:
+                traceback.print_exc()
+                maybe(common.finishExperiment)
+                print("Restarting cluster...")
+                time.sleep(10)
+                break
 
     maybe(common.finishExperiment)
     print("Total experiment duration: {:.2f} seconds".format(
