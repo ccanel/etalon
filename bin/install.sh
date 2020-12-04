@@ -10,7 +10,7 @@ set -o errexit
 NEW_HOSTNAME=$1
 REBOOT=$2
 UBUNTU_VERSION_SUPPORTED=18.04
-OFED_VERSION=4.6-1.0.1.1
+OFED_VERSION=4.9-0.1.7.0
 
 # Validate.
 if [ ! -d "$HOME/etalon" ]; then
