@@ -2,7 +2,7 @@
 
 set -o errexit
 
-export NUM_RACKS=3
+export NUM_RACKS=2
 export HOSTS_PER_RACK=16
 
 # networks

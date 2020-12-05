@@ -5,7 +5,7 @@ import sys
 
 import collections
 
-NUM_RACKS = 3
+NUM_RACKS = 2
 HOSTS_PER_RACK = 16
 
 TDF = 20.
