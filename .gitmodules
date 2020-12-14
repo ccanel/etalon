@@ -10,3 +10,6 @@
 [submodule "ns3-etalon"]
 	path = ns3-etalon
 	url = https://github.com/Flasew/ns3-etalon.git
+[submodule "Submod"]
+	url = https://github.com/ccanel/etalon.git
+	branch = tdtcp
