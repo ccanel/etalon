@@ -477,7 +477,9 @@ def launch(phost, image, host_id):
                                       cpu_limit=cpu_lim, cmd=my_cmd))
     run_on_host(phost, PIPEWORK.format(ext_if=DATA_EXT_IF, int_if=DATA_INT_IF,
                                        net=DATA_NET, rack=get_phost_id(phost),
-                                       hid=host_id))
+                                       hid=host_id,
+                                       mac_addr=gen_mac_addr(phost, host_id,
+                                                             DATA_INT_IF)))
     if not IMAGE_SKIP_TC[image]:
         run_on_host(phost, TC.format(int_if=DATA_INT_IF,
                                      hid=my_id, rate=DATA_RATE_Gbps_TDF))
@@ -499,7 +501,9 @@ def launch(phost, image, host_id):
     run_on_host(phost,
                 PIPEWORK.format(ext_if=CONTROL_EXT_IF, int_if=CONTROL_INT_IF,
                                 net=CONTROL_NET, rack=get_phost_id(phost),
-                                hid=host_id))
+                                hid=host_id,
+                                mac_addr=gen_mac_addr(phost, host_id,
+                                                      CONTROL_INT_IF)))
     if not IMAGE_SKIP_TC[image]:
         run_on_host(phost, TC.format(int_if=CONTROL_INT_IF, hid=my_id,
                                      rate=CONTROL_RATE_Gbps_TDF))

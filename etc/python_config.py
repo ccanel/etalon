@@ -126,7 +126,7 @@ DOCKER_RUN_HDFS = 'sudo docker run -d -h h{hid}.{FQDN} -v ' \
                   '--cpuset-cpus={cpu_set} -c {cpu_limit} --name=h{hid} '\
                   '{image} {cmd}'
 PIPEWORK = 'sudo pipework {ext_if} -i {int_if} h{rack}{hid} ' \
-           '10.{net}.{rack}.{hid}/16'
+           '10.{net}.{rack}.{hid}/16 {mac_addr}'
 TC = 'sudo pipework tc h{hid} qdisc add dev {int_if} root netem rate {rate}gbit'
 SWITCH_PING = 'ping switch -c1'
 GET_SWITCH_MAC = "arp | grep switch | tr -s ' ' | cut -d' ' -f3"
@@ -391,3 +391,14 @@ def gen_slaves_file(fn):
     for r in xrange(1, NUM_RACKS+1):
         for hid in xrange(1, num_hosts+1):
             fp.write('h{r}{hid}.{fqdn}\n'.format(r=r, hid=hid, fqdn=FQDN))
+
+# Generate a MAC address for interface, based on phost id, vhost id, and index
+# of interface. The pattern is aa:aa:aa:{phost_id}:{vhost_id}:{interface_id}.
+# E.g., aa:aa:aa:01:16:02 for eth2 on h116.
+def gen_mac_addr(phost, vid, nic):
+    # Extract phost id.
+    pid = get_phost_id(phost)
+    # Extract NIC id.
+    nid = nic.split('eth')[-1]
+    return 'aa:aa:aa:' + str(pid).rjust(2, '0') + ':' + str(vid).rjust(2, '0')
+        + ':' + nid.rjust(2, '0')
