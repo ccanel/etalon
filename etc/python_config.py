@@ -400,5 +400,5 @@ def gen_mac_addr(phost, vid, nic):
     pid = get_phost_id(phost)
     # Extract NIC id.
     nid = nic.split('eth')[-1]
-    return 'aa:aa:aa:' + str(pid).rjust(2, '0') + ':' + str(vid).rjust(2, '0')
-        + ':' + nid.rjust(2, '0')
+    return ('aa:aa:aa:' + str(pid).rjust(2, '0') + ':' + str(vid).rjust(2, '0')
+            + ':' + nid.rjust(2, '0'))

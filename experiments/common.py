@@ -33,7 +33,7 @@ from python_config import NUM_RACKS, HOSTS_PER_RACK, TIMESTAMP, SCRIPT, \
     IMAGE_DOCKER_RUN, REMOVE_HOSTS_FILE, gen_slaves_file, SLAVES_FILE, \
     get_hostname_from_rack_and_id, get_rack_and_id_from_host, DEFAULT_CC, \
     FLOWGRIND_DEFAULT_DUR_S, FLOWGRIND_DEFAULT_SAMPLE_RATE, TCPDUMP, RM, \
-    WHOAMI, PGREP, KILL
+    WHOAMI, PGREP, KILL, gen_mac_addr
 
 # The last CC mode set by setCC().
 CURRENT_CC = None
