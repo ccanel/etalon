@@ -56,14 +56,17 @@ source /etalon/etc/script_config.sh
 if echo "$NEW_HOSTNAME" | grep -q switch; then
     NEW_CONTROL_IP=$SWITCH_CONTROL_IP
     NEW_DATA_IP=$SWITCH_DATA_IP
+    NEW_MANAGE_IP=$SWITCH_MANAGE_IP
 else
     HOST_NUM="${NEW_HOSTNAME:4}"
     NEW_CONTROL_IP=10.$CONTROL_NET.100.$HOST_NUM
     NEW_DATA_IP=10.$DATA_NET.100.$HOST_NUM
+    NEW_MANAGE_IP=10.$MANAGE_NET.100.$HOST_NUM
 fi
 sudo cp -fv /etalon/etc/netplan/99-etalon.yaml /etc/netplan/
 sudo sed -i "s/CONTROL_IP/$NEW_CONTROL_IP/g" /etc/netplan/99-etalon.yaml
 sudo sed -i "s/DATA_IP/$NEW_DATA_IP/g" /etc/netplan/99-etalon.yaml
+sudo sed -i "s/MANAGE_IP/$NEW_MANAGE_IP/g" /etc/netplan/99-etalon.yaml
 sudo netplan apply
 
 # Make our own /etc/hosts.

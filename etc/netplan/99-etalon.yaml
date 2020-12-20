@@ -8,3 +8,7 @@ network:
             addresses:
             - DATA_IP/16
             mtu: 9000
+        enp68s0d1:
+            addresses:
+            - MANAGE_IP/16
+            mtu: 9000

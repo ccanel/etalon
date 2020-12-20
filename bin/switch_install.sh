@@ -17,6 +17,8 @@ fi
 # without using the Etalon hybrid switch, we would need to modify the emulated
 # hosts' ARP tables to remove the poison records that divert traffic destined
 # for other emulated hosts to the switch machine.
+# Note that the management network 10.3.x.y is only used to carry ICMP packets
+# from switch to hosts, so the switch should have no forwarding rule for it.
 for i in $(seq 1 "$NUM_RACKS"); do
     for j in $(seq 1 "$HOSTS_PER_RACK"); do
         sudo iptables -I FORWARD -s "10.$DATA_NET.$i.$j" -j ACCEPT
