@@ -33,7 +33,8 @@ from python_config import NUM_RACKS, HOSTS_PER_RACK, TIMESTAMP, SCRIPT, \
     IMAGE_DOCKER_RUN, REMOVE_HOSTS_FILE, gen_slaves_file, SLAVES_FILE, \
     get_hostname_from_rack_and_id, get_rack_and_id_from_host, DEFAULT_CC, \
     FLOWGRIND_DEFAULT_DUR_S, FLOWGRIND_DEFAULT_SAMPLE_RATE, TCPDUMP, RM, \
-    WHOAMI, PGREP, KILL, gen_mac_addr
+    WHOAMI, PGREP, KILL, gen_mac_addr, MANAGE_EXT_IF, MANAGE_INT_IF, \
+    MANAGE_NET, MANAGE_RATE_Gbps_TDF
 
 # The last CC mode set by setCC().
 CURRENT_CC = None
@@ -475,6 +476,8 @@ def launch(phost, image, host_id):
     run_on_host(phost, run_cmd.format(image=DOCKER_IMAGE, hosts_file=HOSTS_FILE,
                                       hid=my_id, FQDN=FQDN, cpu_set=cpus,
                                       cpu_limit=cpu_lim, cmd=my_cmd))
+    # Use pipework to add a data net interface in the container and connect to
+    # the physical host's data net interface.
     run_on_host(phost, PIPEWORK.format(ext_if=DATA_EXT_IF, int_if=DATA_INT_IF,
                                        net=DATA_NET, rack=get_phost_id(phost),
                                        hid=host_id,
@@ -498,6 +501,8 @@ def launch(phost, image, host_id):
             dst_id = '%d%d.%s' % (i, j, FQDN)
             run_on_host(my_id, ARP_POISON.format(hid=dst_id, switch_mac=smac))
 
+    # Use pipework to add a control net interface in the container and connect to
+    # the physical host's control net interface.
     run_on_host(phost,
                 PIPEWORK.format(ext_if=CONTROL_EXT_IF, int_if=CONTROL_INT_IF,
                                 net=CONTROL_NET, rack=get_phost_id(phost),
@@ -507,6 +512,18 @@ def launch(phost, image, host_id):
     if not IMAGE_SKIP_TC[image]:
         run_on_host(phost, TC.format(int_if=CONTROL_INT_IF, hid=my_id,
                                      rate=CONTROL_RATE_Gbps_TDF))
+
+    # Use pipework to add a manage net interface in the container and connect to
+    # the physical host's manage net interface.
+    run_on_host(phost,
+                PIPEWORK.format(ext_if=MANAGE_EXT_IF, int_if=MANAGE_INT_IF,
+                                net=MANAGE_NET, rack=get_phost_id(phost),
+                                hid=host_id,
+                                mac_addr=gen_mac_addr(phost, host_id,
+                                                      MANAGE_INT_IF)))
+    if not IMAGE_SKIP_TC[image]:
+        run_on_host(phost, TC.format(int_if=MANAGE_INT_IF, hid=my_id,
+                                     rate=MANAGE_RATE_Gbps_TDF))
 
 
 def launch_rack(phost, image, sync=True):
