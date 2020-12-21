@@ -22,12 +22,10 @@ CONTROL_INT_IF = 'eth2'  # As seen by containers.
 CONTROL_NET = 2
 CONTROL_RATE_Gbps_TDF = 10. / TDF  # Gbps
 
-# management network (apply the same rate limit as control net though it should
-# be really lightly loaded.)
+# management network
 MANAGE_EXT_IF = 'enp68s0d1'  # As seen by physical nodes.
 MANAGE_INT_IF = 'eth3'  # As seen by containers.
 MANAGE_NET = 3
-MANAGE_RATE_Gbps_TDF = 10. / TDF  # Gbps
 
 # 10.x.PHOST_IP.y
 PHOST_IP = 100

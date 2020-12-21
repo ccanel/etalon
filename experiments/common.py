@@ -34,7 +34,7 @@ from python_config import NUM_RACKS, HOSTS_PER_RACK, TIMESTAMP, SCRIPT, \
     get_hostname_from_rack_and_id, get_rack_and_id_from_host, DEFAULT_CC, \
     FLOWGRIND_DEFAULT_DUR_S, FLOWGRIND_DEFAULT_SAMPLE_RATE, TCPDUMP, RM, \
     WHOAMI, PGREP, KILL, gen_mac_addr, MANAGE_EXT_IF, MANAGE_INT_IF, \
-    MANAGE_NET, MANAGE_RATE_Gbps_TDF
+    MANAGE_NET
 
 # The last CC mode set by setCC().
 CURRENT_CC = None
@@ -521,9 +521,6 @@ def launch(phost, image, host_id):
                                 hid=host_id,
                                 mac_addr=gen_mac_addr(phost, host_id,
                                                       MANAGE_INT_IF)))
-    if not IMAGE_SKIP_TC[image]:
-        run_on_host(phost, TC.format(int_if=MANAGE_INT_IF, hid=my_id,
-                                     rate=MANAGE_RATE_Gbps_TDF))
 
 
 def launch_rack(phost, image, sync=True):
