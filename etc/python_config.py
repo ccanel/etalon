@@ -30,6 +30,13 @@ MANAGE_NET = 3
 # 10.x.PHOST_IP.y
 PHOST_IP = 100
 
+TDN_UPDATE_BASE_MAC = 'aa:aa:aa:00:00:00'
+TDN_UPDATE_BASE_IP = '10.%s.0.0' % (MANAGE_NET)
+TDN_UPDATE_SRC_MAC = 'bb:bb:bb:cc:cc:cc'
+TDN_UPDATE_SRC_IP = '10.%s.%s.100' % (MANAGE_NET, PHOST_IP)
+
+NUM_TDN = 2
+
 # switch IPs
 SWITCH_CONTROL_IP = '10.%s.%s.100' % (CONTROL_NET, PHOST_IP)
 SWITCH_DATA_IP = '10.%s.%s.100' % (DATA_NET, PHOST_IP)
@@ -407,3 +414,4 @@ def gen_mac_addr(phost, vid, nic):
     nid = nic.split('eth')[-1]
     return ('aa:aa:aa:' + str(pid).rjust(2, '0') + ':' + str(vid).rjust(2, '0')
             + ':' + nid.rjust(2, '0'))
+

@@ -10,7 +10,9 @@ sys.path.insert(0, path.join(PROGDIR, '..', 'etc'))
 from python_config import DATA_EXT_IF, NUM_RACKS, HOSTS_PER_RACK, \
     CIRCUIT_BW_Gbps_TDF, PACKET_BW_Gbps_TDF, CIRCUIT_LATENCY_s_TDF, \
     PACKET_LATENCY_s_TDF, RECONFIG_DELAY_us, TDF, CLICK_PORT, \
-    get_data_ip_from_host, get_phost_from_id, get_host_from_rack_and_id
+    get_data_ip_from_host, get_phost_from_id, get_host_from_rack_and_id, \
+    gen_mac_addr, TDN_UPDATE_BASE_MAC, TDN_UPDATE_BASE_IP, TDN_UPDATE_SRC_MAC, \
+    TDN_UPDATE_SRC_IP, NUM_TDN, MANAGE_NET
 
 log_poss = ["before", "after"]
 assert len(sys.argv) == 2, \
@@ -49,6 +51,24 @@ ip_def = ip_def.strip()[:-1] + ')'
 
 print ip_def
 print
+
+# # defining all host and vhost (data_net) IPs
+# k = 0
+# eth_def = 'define('
+# for i in xrange(1, NUM_RACKS+1):
+#     for j in xrange(1, HOSTS_PER_RACK+1):
+#         eth_str = '$ETHMGT%d%d' % (i, j)
+#         ethaddr = gen_mac_addr("host"+str(i), j, 'eth3')
+#         eth_def += '%s %s, ' % (eth_str, ethaddr)
+#         k += 1
+#         if k == 2:
+#             eth_def = eth_def[:-1]
+#             eth_def += '\n       '
+#             k = 0
+# eth_def = eth_def.strip()[:-1] + ')'
+
+# print eth_def
+# print
 
 # all other params (set in ../etc/python_config.py)
 print 'define ($CIRCUIT_BW_Gbps_TDF %.1fGbps, $PACKET_BW_Gbps_TDF %.1fGbps)' % (
@@ -114,6 +134,14 @@ print 'arp_c :: Classifier(12/0800, 12/0806 20/0002, 12/0806 20/0001)'
 print 'arp_q :: ARPQuerier($DEVNAME:ip, $DEVNAME:eth)'
 print 'arp_r :: ARPResponder($DEVNAME)'
 print
+
+print 'icmptdnsrc :: ICMPTDNUpdate(%s, %s, %s, %s, %s, ' \
+      'NTDN %d, NRACK %d, NHOST %d, TEST false)' % \
+      (TDN_UPDATE_SRC_IP, TDN_UPDATE_SRC_MAC,   
+       TDN_UPDATE_BASE_IP, TDN_UPDATE_BASE_MAC, 
+       MANAGE_NET, NUM_TDN, NUM_RACKS, HOSTS_PER_RACK)
+print
+
 
 # defining input classifiers (i.e., packets from vhost h13 (rack 1, host 3) go
 # to switch input port 1, packets from h24 go to switch input port 2, etc.)
@@ -432,7 +460,9 @@ print 'arp_c[2] -> arp_r -> out'
 print
 # ping responder. pc[0] is ICMP echo packets.
 print 'pc -> ICMPPingResponder -> arp_q'
-
+print
+# TDN Updater
+print 'icmptdnsrc -> Queue(CAPACITY 20) -> out'
 ######################
 # End Main Connections
 ######################
