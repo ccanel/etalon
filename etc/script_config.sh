@@ -5,7 +5,7 @@ set -o errexit
 export NUM_RACKS=3
 export HOSTS_PER_RACK=16
 
-export TDF=20
+export TDF=1
 
 # networks
 export DATA_IF=enp68s0

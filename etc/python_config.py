@@ -8,19 +8,19 @@ import collections
 NUM_RACKS = 3
 HOSTS_PER_RACK = 16
 
-TDF = 20.
+TDF = 1.
 
 # data network
 DATA_EXT_IF = 'enp68s0'  # As seen by physical nodes.
 DATA_INT_IF = 'eth1'  # As seen by containers.
 DATA_NET = 1
-DATA_RATE_Gbps_TDF = 40. / TDF  # Gbps
+DATA_RATE_Gbps_TDF = 1. / 1000 / TDF  # Gbps
 
 # control network
 CONTROL_EXT_IF = 'eno4'  # As seen by physical nodes.
 CONTROL_INT_IF = 'eth2'  # As seen by containers.
 CONTROL_NET = 2
-CONTROL_RATE_Gbps_TDF = 10. / TDF  # Gbps
+CONTROL_RATE_Gbps_TDF = 1. / TDF  # Gbps
 
 # management network
 MANAGE_EXT_IF = 'enp68s0d1'  # As seen by physical nodes.
@@ -60,21 +60,21 @@ RPYC_CONNECTIONS = {}
 FQDN = 'etalon.local'
 
 # link parameters
-CIRCUIT_BW_Gbps = 80.
+CIRCUIT_BW_Gbps = DATA_RATE_Gbps_TDF * TDF * 4
 CIRCUIT_BW_bps = CIRCUIT_BW_Gbps * 10**9
 CIRCUIT_BW_Gbps_TDF = CIRCUIT_BW_Gbps / TDF
-CIRCUIT_LATENCY_us = 50.
+CIRCUIT_LATENCY_us = 1000.
 CIRCUIT_LATENCY_s = CIRCUIT_LATENCY_us / 10**6
 CIRCUIT_LATENCY_s_TDF = CIRCUIT_LATENCY_s * TDF
-PACKET_BW_Gbps = 10.
+PACKET_BW_Gbps = DATA_RATE_Gbps_TDF * TDF * HOSTS_PER_RACK / 4
 PACKET_BW_bps = PACKET_BW_Gbps * 10**9
 PACKET_BW_Gbps_TDF = PACKET_BW_Gbps / TDF
-PACKET_LATENCY_us = 250.
+PACKET_LATENCY_us = 5000.
 PACKET_LATENCY_s = PACKET_LATENCY_us / 10**6
 PACKET_LATENCY_s_TDF = PACKET_LATENCY_s * TDF
 
 # reconfiguration penalty
-RECONFIG_DELAY_us = 10.
+RECONFIG_DELAY_us = 200.
 
 # where are handles defined
 NODES_FILE = '../etc/handles'
