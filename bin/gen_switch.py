@@ -72,7 +72,7 @@ print
 # print
 
 # all other params (set in ../etc/python_config.py)
-print 'define ($CIRCUIT_BW_Gbps_TDF %.1fGbps, $PACKET_BW_Gbps_TDF %.1fGbps)' % (
+print 'define ($CIRCUIT_BW_Gbps_TDF %.6fGbps, $PACKET_BW_Gbps_TDF %.6fGbps)' % (
     CIRCUIT_BW_Gbps_TDF, PACKET_BW_Gbps_TDF)
 print
 
@@ -139,8 +139,8 @@ print
 
 print 'icmptdnsrc :: ICMPTDNUpdate(%s, %s, %s, %s, %s, ' \
       'NTDN %d, NRACK %d, NHOST %d, TEST false)' % \
-      (TDN_UPDATE_SRC_IP, TDN_UPDATE_SRC_MAC,   
-       TDN_UPDATE_BASE_IP, TDN_UPDATE_BASE_MAC, 
+      (TDN_UPDATE_SRC_IP, TDN_UPDATE_SRC_MAC,
+       TDN_UPDATE_BASE_IP, TDN_UPDATE_BASE_MAC,
        MANAGE_NET, NUM_TDN, NUM_RACKS, HOSTS_PER_RACK)
 print
 
