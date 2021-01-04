@@ -1,3 +1,4 @@
-host1 node2.maas
-host2 node3.maas
-host3 node4.maas
+switch node4.maas
+host1 node3.maas
+host2 node5.maas
+host3 node2.maas

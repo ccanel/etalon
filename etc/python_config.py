@@ -63,18 +63,18 @@ FQDN = 'etalon.local'
 CIRCUIT_BW_Gbps = 80.
 CIRCUIT_BW_bps = CIRCUIT_BW_Gbps * 10**9
 CIRCUIT_BW_Gbps_TDF = CIRCUIT_BW_Gbps / TDF
-CIRCUIT_LATENCY_us = 30.
+CIRCUIT_LATENCY_us = 50.
 CIRCUIT_LATENCY_s = CIRCUIT_LATENCY_us / 10**6
 CIRCUIT_LATENCY_s_TDF = CIRCUIT_LATENCY_s * TDF
 PACKET_BW_Gbps = 10.
 PACKET_BW_bps = PACKET_BW_Gbps * 10**9
 PACKET_BW_Gbps_TDF = PACKET_BW_Gbps / TDF
-PACKET_LATENCY_us = 5.
+PACKET_LATENCY_us = 250.
 PACKET_LATENCY_s = PACKET_LATENCY_us / 10**6
 PACKET_LATENCY_s_TDF = PACKET_LATENCY_s * TDF
 
 # reconfiguration penalty
-RECONFIG_DELAY_us = 20.
+RECONFIG_DELAY_us = 10.
 
 # where are handles defined
 NODES_FILE = '../etc/handles'
@@ -412,6 +412,6 @@ def gen_mac_addr(phost, vid, nic):
     pid = get_phost_id(phost)
     # Extract NIC id.
     nid = nic.split('eth')[-1]
-    return ('aa:aa:aa:' + str(pid).rjust(2, '0') + ':' + str(vid).rjust(2, '0')
-            + ':' + nid.rjust(2, '0'))
-
+    return ('aa:aa:aa:' + hex(int(str(pid).rjust(2, '0')))[2:] + ':' +
+            hex(int(str(vid).rjust(2, '0')))[2:] + ':' +
+            hex(int(nid.rjust(2, '0')))[2:])

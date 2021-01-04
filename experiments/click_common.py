@@ -214,6 +214,26 @@ def setFakeStrobeSchedule(num_racks_fake=NUM_RACKS, night_len_us=20, day_len_us=
     schedule += "{} 2/0/1 {} -1/-1/-1".format(day_len_us, night_len_us)
     setFixedSchedule(schedule)
 
+def setFixedBidiSchedule(num_racks=NUM_RACKS, night_len_us=20, day_len_us=180):
+    """
+    Set a fixed bidirectional schedule that performs as a simple on/off hybrid
+    switch, where either only bidirectional circuits between rack 0 and 1 are
+    on, or only packet links are on. Schedule looks as follows:
+
+    E.g., for setFixedBidiSchedule(3, 200, 1000000) will create this schedule:
+            1000000 0/1/2 200 -1/-1/-1   # 1
+            1000000 1/0/2 200 -1/-1/-1   # 2
+    """
+    # Configuration that turns off all the circuit links. Remove trailing '/'.
+    off_config = ('-1/' * num_racks)[:-1]
+    # Day len, day config, night len, off config
+    config_s = '%d %s %d %s '
+    schedule = "{} ".format(4)
+    schedule += config_s % (day_len_us, '0/1/2', night_len_us, off_config)
+    schedule += config_s % (day_len_us, '1/0/2', night_len_us, off_config)
+    # Remove trailing space.
+    schedule = schedule[:-1]
+    setFixedSchedule(schedule)
 
 def setCircuitSchedule(configuration):
     setFixedSchedule('1 %d %s' % (20 * TDF * 10 * 10, configuration))
@@ -266,7 +286,8 @@ def setConfig(config):
          'divert_acks': False, 'circuit_link_delay': CIRCUIT_LATENCY_s_TDF,
          'packet_link_bandwidth': PACKET_BW_Gbps_TDF, 'hdfs': False,
          'thresh': 1000000, 'night_len_us': RECONFIG_DELAY_us * TDF,
-         'day_len_us': RECONFIG_DELAY_us * TDF * 9}
+         'day_len_us': RECONFIG_DELAY_us * TDF * 5000,
+         'num_racks_fake': 3}
 
     c.update(config)
     clearCounters()
@@ -288,6 +309,10 @@ def setConfig(config):
         setFakeStrobeSchedule(num_racks_fake=c['num_racks_fake'],
                               night_len_us=c['night_len_us'],
                               day_len_us=c['day_len_us'])
+    if t == 'fixed_bidi':
+        setFixedBidiSchedule(num_racks=NUM_RACKS,
+                             night_len_us=c['night_len_us'],
+                             day_len_us=c['day_len_us'])
     if t == 'circuit':
         setCircuitSchedule(DEFAULT_CIRCUIT_CONFIG)
     if t == 'fixed':
