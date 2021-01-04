@@ -30,6 +30,7 @@ print
 print '// For more information, see etalon/bin/gen-switch.py.'
 print
 print 'define($DEVNAME %s)' % DATA_EXT_IF
+print 'define($MGTNAME %s)' % 'enp68s0d1'
 print 'define($NUM_RACKS %s)' % NUM_RACKS
 print
 
@@ -126,6 +127,7 @@ print
 # entry and exit points
 print 'in :: FromDPDKDevice(0, MTU 9000)'
 print 'out :: ToDPDKDevice(0)'
+print 'mgtout :: ToDPDKDevice(1)'
 print
 
 # arp. Pattern 0 (port 0) is IP packets. Pattern 1 (port 1) is ARP replies.
@@ -462,7 +464,7 @@ print
 print 'pc -> ICMPPingResponder -> arp_q'
 print
 # TDN Updater
-print 'icmptdnsrc -> Queue(CAPACITY 20) -> out'
+print 'icmptdnsrc -> mgtout'
 ######################
 # End Main Connections
 ######################
