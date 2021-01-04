@@ -119,6 +119,7 @@ cp -fv "$(command -v flowgrindd)" /etalon/vhost/
 # libVT.
 echo "Installing libVT..."
 cd /etalon/libVT
+sed -i "s/tdf = 20/tdf = $TDF/g" libVT.c
 sudo make -j "$(nproc)" install
 # Copy to the dir in which the docker build will run.
 cp -fv libVT.so /etalon/vhost/
