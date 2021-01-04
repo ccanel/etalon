@@ -135,9 +135,9 @@ def setCircuitLinkDelay(delay):
 def setPacketLinkBandwidth(bw):
     for i in xrange(1, NUM_RACKS + 1):
         clickWriteHandler('hybrid_switch/packet_up_link%d/lu' % (i),
-                          'bandwidth', '%.1fGbps' % bw)
+                          'bandwidth', '%.6fGbps' % bw)
         clickWriteHandler('hybrid_switch/ps/packet_link%d/lu' % (i),
-                          'bandwidth', '%.1fGbps' % bw)
+                          'bandwidth', '%.6fGbps' % bw)
 
 
 def setSolsticeThresh(thresh):
