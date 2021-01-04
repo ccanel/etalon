@@ -115,7 +115,7 @@ DOCKER_IMAGE = 'etalon'
 DOCKER_CLEAN = 'sudo docker ps -q | xargs sudo docker stop -t 0 ' \
                '2> /dev/null; ' \
                'sudo docker ps -aq | xargs sudo docker rm 2> /dev/null'
-DOCKER_BUILD = 'sudo docker build -t %s -f ' \
+DOCKER_BUILD = 'sudo docker build --no-cache -t %s -f ' \
 '/etalon/vhost/etalon.dockerfile /etalon/vhost/' % DOCKER_IMAGE
 DOCKER_LOCAL_IMAGE_PATH = '/etalon/vhost/etalon.img'
 DOCKER_SAVE = 'sudo docker save -o {img} etalon && sudo chown ' \
